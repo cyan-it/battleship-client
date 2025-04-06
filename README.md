@@ -1,1 +1,3 @@
-# battleship-client
+# Battleship-Client
+
+Battleship-Client Application
