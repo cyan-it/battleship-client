@@ -2,16 +2,17 @@ package com.battleshipclient;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import org.jetbrains.annotations.NotNull;
 
 public class Main extends GameApplication {
 
     private SceneManager sceneManager;
 
     @Override
-    protected void initSettings(GameSettings settings) {
-        settings.setTitle("Battleship");
-        settings.setWidth(800);
-        settings.setHeight(600);
+    protected void initSettings(@NotNull GameSettings settings) {
+        settings.setTitle(I18nLoader.getText("appTitle"));
+        settings.setWidth(1440);
+        settings.setHeight(810);
     }
 
     @Override
