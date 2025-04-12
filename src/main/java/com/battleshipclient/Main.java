@@ -2,7 +2,12 @@ package com.battleshipclient;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import javafx.scene.ImageCursor;
+import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
+import java.util.Objects;
+
+import static com.almasb.fxgl.dsl.FXGL.getGameScene;
 
 public class Main extends GameApplication {
 
@@ -17,6 +22,8 @@ public class Main extends GameApplication {
 
     @Override
     protected void initGame() {
+        Image mouseCursorImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/Mouse_Cursor.png")).toExternalForm());
+        getGameScene().setCursor(new ImageCursor(mouseCursorImage));
         sceneManager = new SceneManager();
         sceneManager.showHomeScene();
     }
