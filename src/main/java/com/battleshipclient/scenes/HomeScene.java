@@ -30,6 +30,7 @@ public class HomeScene {
     }
 
     @NotNull
+    // Sets the whole UI
     private AnchorPane setScene(VBox header, VBox account, HBox game) {
         AnchorPane anchoredLayout = new AnchorPane();
 
@@ -58,6 +59,7 @@ public class HomeScene {
     }
 
     @NotNull
+    // Sets the background image
     private ImageView setBackgroundImage() {
         Image backgroundImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/HomeScene_Background.jpg")).toExternalForm());
 
@@ -70,6 +72,7 @@ public class HomeScene {
 
     @NotNull
     @Contract("_, _ -> param1")
+    // Sets the Login and Sign Up buttons
     private VBox setAccountBoxParameters(@NotNull VBox box, SceneManager sceneManager) {
         box.setAlignment(Pos.TOP_RIGHT);
 
@@ -88,6 +91,7 @@ public class HomeScene {
 
     @NotNull
     @Contract("_, _ -> param1")
+    // Sets the Create Game and Join Game buttons
     private HBox setGameBoxParameters(@NotNull HBox box, SceneManager sceneManager) {
         box.setAlignment(Pos.CENTER);
 
@@ -106,6 +110,7 @@ public class HomeScene {
 
     @NotNull
     @Contract("_, _ -> param1")
+    // Sets the title and credentials
     private VBox setHeaderBoxParameters(@NotNull VBox box, SceneManager sceneManager) {
         box.setAlignment(Pos.TOP_CENTER);
 
@@ -122,6 +127,7 @@ public class HomeScene {
         return box;
     }
 
+    // Returns the home scene
     public Pane getRoot() {
         return root;
     }
