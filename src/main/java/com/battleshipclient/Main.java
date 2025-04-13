@@ -2,6 +2,7 @@ package com.battleshipclient;
 
 import com.almasb.fxgl.app.GameApplication;
 import com.almasb.fxgl.app.GameSettings;
+import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
 import javafx.scene.ImageCursor;
@@ -33,11 +34,19 @@ public class Main extends GameApplication {
 
         sceneManager = new SceneManager();
         sceneManager.showHomeScene();
+
+        // Event handler for forcefully closing the app
+        FXGL.getPrimaryStage().setOnCloseRequest(event -> {
+            GameExit exit = new GameExit();
+            exit.exit();
+            event.consume();
+        });
     }
 
     protected void initInput() {
         Input input = getInput();
 
+        // Escaping to close the game
         input.addAction(new UserAction("Exit") {
             @Override
             protected void onActionEnd() {

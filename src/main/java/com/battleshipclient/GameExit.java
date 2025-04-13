@@ -16,13 +16,15 @@ import java.util.function.Consumer;
 
 public class GameExit {
 
+    // Exit the game after confirmation
     public void exit() {
-        // TODO: Maybe do some stuff before exiting - later on
+        // TODO: When inGame -> not possible - has to surrender first
         showConfirmationPopup(confirmed -> {
             if (confirmed) Platform.exit();
         });
     }
 
+    // Load confirmation popup and callback answer
     private void showConfirmationPopup(Consumer<Boolean> callback) {
         VBox popupBox = new VBox(20);
         popupBox.getStyleClass().add("gameExit-popup");
@@ -30,15 +32,18 @@ public class GameExit {
         HBox buttonBox = new HBox(40);
         buttonBox.setAlignment(Pos.BASELINE_CENTER);
 
+        // Add and format confirmation text
         Text confirmationText = new Text(I18nLoader.getText("gameExit.confirmationText"));
         confirmationText.setTextAlignment(TextAlignment.CENTER);
         confirmationText.setFont(Font.font("Courier New", FontWeight.BOLD, 20));
 
+        // Add and format confirm and cancel buttons
         Button toConfirmButton = new Button(I18nLoader.getText("gameExit.yes"));
         toConfirmButton.getStyleClass().add("gameExit-confirm-button");
         Button toCancelButton = new Button(I18nLoader.getText("gameExit.no"));
         toCancelButton.getStyleClass().add("gameExit-cancel-button");
 
+        // Button actions
         toConfirmButton.setOnAction(actionEvent -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(true);
@@ -49,16 +54,20 @@ public class GameExit {
             callback.accept(false);
         });
 
+        // Add everything to popupBox
         buttonBox.getChildren().addAll(toConfirmButton, toCancelButton);
         popupBox.getChildren().addAll(confirmationText, buttonBox);
 
+        // Load css
         popupBox.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/assets/ui/style.css")).toExternalForm()
+                Objects.requireNonNull(getClass().getResource("/assets/ui/general.css")).toExternalForm()
         );
 
+        // Center popup
         popupBox.setTranslateX(FXGL.getAppWidth() / 2.0 - 250);
         popupBox.setTranslateY(FXGL.getAppHeight() / 2.0 - 60);
 
+        // Add popup to ui
         FXGL.getGameScene().addUINode(popupBox);
     }
 }

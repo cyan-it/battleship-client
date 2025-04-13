@@ -37,22 +37,27 @@ public class HomeScene {
         anchoredLayout.getChildren().add(setBackgroundImage());
         anchoredLayout.getChildren().addAll(header, account, game);
 
+        // Set position for header box
         AnchorPane.setTopAnchor(header, 20.0);
         AnchorPane.setLeftAnchor(header, 0.0);
         AnchorPane.setRightAnchor(header, 0.0);
 
+        // Set position for account box
         AnchorPane.setTopAnchor(account, 20.0);
         AnchorPane.setRightAnchor(account, 20.0);
 
+        // Set position for game box
         AnchorPane.setTopAnchor(game, 400.0);
         AnchorPane.setLeftAnchor(game, 0.0);
         AnchorPane.setRightAnchor(game, 0.0);
 
+        // Set to fullscreen
         anchoredLayout.prefWidthProperty().bind(FXGL.getGameScene().getViewport().widthProperty());
         anchoredLayout.prefHeightProperty().bind(FXGL.getGameScene().getViewport().heightProperty());
 
+        // Load css
         anchoredLayout.getStylesheets().add(
-                Objects.requireNonNull(getClass().getResource("/assets/ui/style.css")).toExternalForm()
+                Objects.requireNonNull(getClass().getResource("/assets/ui/home.css")).toExternalForm()
         );
 
         return anchoredLayout;
@@ -76,13 +81,15 @@ public class HomeScene {
     private VBox setAccountBoxParameters(@NotNull VBox box, SceneManager sceneManager) {
         box.setAlignment(Pos.TOP_RIGHT);
 
+        // Create and format signUp Button
         Button toSignUpSceneButton = new Button(I18nLoader.getText("scene.title.signUp"));
         toSignUpSceneButton.setOnAction(event -> sceneManager.showSignUpScene());
-        toSignUpSceneButton.getStyleClass().add("homeScene-account-button");
+        toSignUpSceneButton.getStyleClass().add("account-button");
 
+        // Create and format logIn Button
         Button toLoginSceneButton = new Button(I18nLoader.getText("scene.title.logIn"));
         toLoginSceneButton.setOnAction(event -> sceneManager.showLoginScene());
-        toLoginSceneButton.getStyleClass().add("homeScene-account-button");
+        toLoginSceneButton.getStyleClass().add("account-button");
 
         box.getChildren().addAll(toLoginSceneButton, toSignUpSceneButton);
 
@@ -95,13 +102,15 @@ public class HomeScene {
     private HBox setGameBoxParameters(@NotNull HBox box, SceneManager sceneManager) {
         box.setAlignment(Pos.CENTER);
 
+        // Create and format createGame Button
         Button toCreateGameSceneButton = new Button(I18nLoader.getText("scene.title.createGame"));
         toCreateGameSceneButton.setOnAction(event -> sceneManager.showCreateGameScene());
-        toCreateGameSceneButton.getStyleClass().add("homeScene-game-button");
+        toCreateGameSceneButton.getStyleClass().add("game-button");
 
+        // Create and format joinGame Button
         Button toJoinGameSceneButton = new Button(I18nLoader.getText("scene.title.joinGame"));
         toJoinGameSceneButton.setOnAction(event -> sceneManager.showJoinGameScene());
-        toJoinGameSceneButton.getStyleClass().add("homeScene-game-button");
+        toJoinGameSceneButton.getStyleClass().add("game-button");
 
         box.getChildren().addAll(toCreateGameSceneButton, toJoinGameSceneButton);
 
@@ -114,10 +123,12 @@ public class HomeScene {
     private VBox setHeaderBoxParameters(@NotNull VBox box, SceneManager sceneManager) {
         box.setAlignment(Pos.TOP_CENTER);
 
+        // Create and format title
         Text title = new Text(I18nLoader.getText("appTitle"));
         title.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 60));
         title.setTextAlignment(TextAlignment.CENTER);
 
+        // Create and format credentials
         Text credentials = new Text(I18nLoader.getText("appCredentials"));
         credentials.setFont(Font.font("Courier New", FontWeight.BOLD, 20));
         credentials.setTextAlignment(TextAlignment.CENTER);
