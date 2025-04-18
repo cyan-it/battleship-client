@@ -24,7 +24,7 @@ public class HomeScene {
     public HomeScene(SceneManager sceneManager) {
         VBox account = setAccountBoxParameters(new VBox(20), sceneManager);
         HBox game = setGameBoxParameters(new HBox(80), sceneManager);
-        VBox header = setHeaderBoxParameters(new VBox(20), sceneManager);
+        VBox header = setHeaderBoxParameters(new VBox(20));
 
         this.root = setScene(header, account, game);
     }
@@ -83,12 +83,12 @@ public class HomeScene {
 
         // Create and format signUp Button
         Button toSignUpSceneButton = new Button(I18nLoader.getText("scene.title.signUp"));
-        toSignUpSceneButton.setOnAction(event -> sceneManager.showSignUpScene());
+        toSignUpSceneButton.setOnAction(_ -> sceneManager.showSignUpScene());
         toSignUpSceneButton.getStyleClass().add("account-button");
 
         // Create and format logIn Button
         Button toLoginSceneButton = new Button(I18nLoader.getText("scene.title.logIn"));
-        toLoginSceneButton.setOnAction(event -> sceneManager.showLoginScene());
+        toLoginSceneButton.setOnAction(_ -> sceneManager.showLoginScene());
         toLoginSceneButton.getStyleClass().add("account-button");
 
         box.getChildren().addAll(toLoginSceneButton, toSignUpSceneButton);
@@ -104,12 +104,12 @@ public class HomeScene {
 
         // Create and format createGame Button
         Button toCreateGameSceneButton = new Button(I18nLoader.getText("scene.title.createGame"));
-        toCreateGameSceneButton.setOnAction(event -> sceneManager.showCreateGameScene());
+        toCreateGameSceneButton.setOnAction(_ -> sceneManager.showCreateGameScene());
         toCreateGameSceneButton.getStyleClass().add("game-button");
 
         // Create and format joinGame Button
         Button toJoinGameSceneButton = new Button(I18nLoader.getText("scene.title.joinGame"));
-        toJoinGameSceneButton.setOnAction(event -> sceneManager.showJoinGameScene());
+        toJoinGameSceneButton.setOnAction(_ -> sceneManager.showJoinGameScene());
         toJoinGameSceneButton.getStyleClass().add("game-button");
 
         box.getChildren().addAll(toCreateGameSceneButton, toJoinGameSceneButton);
@@ -118,9 +118,9 @@ public class HomeScene {
     }
 
     @NotNull
-    @Contract("_, _ -> param1")
+    @Contract("_ -> param1")
     // Sets the title and credentials
-    private VBox setHeaderBoxParameters(@NotNull VBox box, SceneManager sceneManager) {
+    private VBox setHeaderBoxParameters(@NotNull VBox box) {
         box.setAlignment(Pos.TOP_CENTER);
 
         // Create and format title
