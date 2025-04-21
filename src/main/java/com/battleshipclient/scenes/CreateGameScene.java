@@ -11,6 +11,8 @@ import javafx.scene.layout.Pane;
 
 public class CreateGameScene {
 
+    // TODO: UserOverlay on init and exit!
+
     private final Pane root;
 
     public CreateGameScene(SceneManager sceneManager) {
@@ -20,7 +22,7 @@ public class CreateGameScene {
         Text title = new Text(I18nLoader.getText("scene.title.createGame"));
         Button toHomeSceneButton = new Button(I18nLoader.getText("button.cancel"));
 
-        toHomeSceneButton.setOnAction(event -> sceneManager.showHomeScene());
+        toHomeSceneButton.setOnAction(event -> sceneManager.showHomeScene(true));
 
         layout.getChildren().addAll(title, toHomeSceneButton);
         this.root = layout;

@@ -1,8 +1,7 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.battleshipclient.I18nLoader;
-import com.battleshipclient.SceneManager;
+import com.battleshipclient.*;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;
@@ -19,23 +18,26 @@ import java.util.Objects;
 
 public class HomeScene {
 
+    private final VBox logout;
+    private final VBox account;
     private final Pane root;
 
     public HomeScene(SceneManager sceneManager) {
-        VBox account = setAccountBoxParameters(new VBox(20), sceneManager);
+        account = setAccountBoxParameters(new VBox(20), sceneManager);
+        logout = setLogOutBoxParameters(sceneManager);
         HBox game = setGameBoxParameters(new HBox(80), sceneManager);
         VBox header = setHeaderBoxParameters(new VBox(20));
 
-        this.root = setScene(header, account, game);
+        this.root = setScene(header, account, logout, game);
     }
 
     @NotNull
     // Sets the whole UI
-    private AnchorPane setScene(VBox header, VBox account, HBox game) {
+    private AnchorPane setScene(VBox header, VBox account, VBox logout, HBox game) {
         AnchorPane anchoredLayout = new AnchorPane();
 
         anchoredLayout.getChildren().add(setBackgroundImage());
-        anchoredLayout.getChildren().addAll(header, account, game);
+        anchoredLayout.getChildren().addAll(header, account, logout, game);
 
         // Set position for header box
         AnchorPane.setTopAnchor(header, 20.0);
@@ -45,6 +47,10 @@ public class HomeScene {
         // Set position for account box
         AnchorPane.setTopAnchor(account, 20.0);
         AnchorPane.setRightAnchor(account, 20.0);
+
+        // Set position for log-out box
+        AnchorPane.setTopAnchor(logout, 20.0);
+        AnchorPane.setRightAnchor(logout, 20.0);
 
         // Set position for game box
         AnchorPane.setTopAnchor(game, 400.0);
@@ -138,8 +144,45 @@ public class HomeScene {
         return box;
     }
 
+    // Sets the log-out box
+    @NotNull
+    private VBox setLogOutBoxParameters(SceneManager sceneManager) {
+        VBox box = new VBox(20);
+        box.setAlignment(Pos.TOP_RIGHT);
+        box.setDisable(true);
+        box.setVisible(false);
+
+        // Create and format log-out Button
+        Button toLogOutButton = new Button(I18nLoader.getText("scene.title.logOut"));
+        toLogOutButton.setOnAction(_ -> {
+            Text confirmationText = new Text(I18nLoader.getText("logout"));
+
+            SimpleConfirmationPopup confirmationPopup = new SimpleConfirmationPopup();
+            confirmationPopup.displayPopup(confirmationText, confirmed -> {
+                if (confirmed) {
+                    UserOverlay.initOverlay(false, "");
+                    UserOverlay.disableOverlay();
+                    sceneManager.showHomeScene(false);
+                }
+            });
+        });
+        toLogOutButton.getStyleClass().add("account-button");
+
+        box.getChildren().add(toLogOutButton);
+
+        return box;
+    }
+
     // Returns the home scene
-    public Pane getRoot() {
+    public Pane getRoot(boolean isLoggedIn) {
+        if (isLoggedIn) {
+            account.setDisable(true);
+            account.setVisible(false);
+
+            logout.setDisable(false);
+            logout.setVisible(true);
+        }
+
         return root;
     }
 }

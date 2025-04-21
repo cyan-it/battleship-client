@@ -57,7 +57,7 @@
 .simpleTextPopup {
     -fx-background-color: #116b80;
     -fx-text-fill: white;
-    -fx-padding: 14px 0;
+    -fx-padding: 14px 10px;
     -fx-background-radius: 12px;
     -fx-border-radius: 12px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.3, 0, 2);
@@ -65,7 +65,6 @@
     -fx-border-width: 1px;
     -fx-alignment: center;
     -fx-min-width: 500px;
-    -fx-max-width: 500px;
     -fx-min-height: 100px;
     -fx-max-height: 100px;
 }
@@ -88,4 +87,34 @@
 
 .simpleTextPopup-close-button:hover {
     -fx-background-color: #0099bb;
+}
+
+.userOverlay {
+    -fx-background-color: #116b80;
+    -fx-text-fill: white;
+    -fx-padding: 14px 10px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.3, 0, 2);
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+    -fx-alignment: center;
+    -fx-min-height: 55px;
+    -fx-max-height: 55px;
+}
+
+.simpleConfirmationPopup {
+    -fx-background-color: #116b80;
+    -fx-text-fill: white;
+    -fx-padding: 14px 10px;
+    -fx-background-radius: 12px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 6, 0.3, 0, 2);
+    -fx-border-color: white;
+    -fx-border-width: 1px;
+    -fx-alignment: center;
+    -fx-min-width: 500px;
+    -fx-max-width: 500px;
+    -fx-min-height: 120px;
+    -fx-max-height: 120px;
 }

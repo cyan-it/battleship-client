@@ -33,7 +33,7 @@ public class Main extends GameApplication {
         getGameScene().setCursor(new ImageCursor(mouseCursorImage));
 
         sceneManager = new SceneManager();
-        sceneManager.showHomeScene();
+        sceneManager.showHomeScene(false);
 
         // Event handler for forcefully closing the app
         FXGL.getPrimaryStage().setOnCloseRequest(event -> {

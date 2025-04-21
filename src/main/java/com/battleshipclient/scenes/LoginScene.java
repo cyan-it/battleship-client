@@ -4,6 +4,7 @@ import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.I18nLoader;
 import com.battleshipclient.SceneManager;
 import com.battleshipclient.SimpleTextPopup;
+import com.battleshipclient.UserOverlay;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -109,7 +110,6 @@ public class LoginScene {
 
     // Sets the input fields and texts
     @NotNull
-    @Contract("_ -> param1")
     private VBox setLoginInputParameters(@NotNull VBox box) {
         box.setAlignment(Pos.CENTER);
 
@@ -149,12 +149,15 @@ public class LoginScene {
 
         // Create and format login button
         Button toLoginButton = new Button(I18nLoader.getText("scene.title.logIn"));
-        toLoginButton.setOnAction(_ -> verifyLogin());
+        toLoginButton.setOnAction(_ -> verifyLogin(sceneManager));
         toLoginButton.getStyleClass().add("green-button");
 
         // Create and format cancel button
         Button toCancelButton = new Button(I18nLoader.getText("return"));
-        toCancelButton.setOnAction(_ -> sceneManager.showHomeScene());
+        toCancelButton.setOnAction(_ -> {
+            sceneManager.showHomeScene(false);
+            clearInputFields();
+        });
         toCancelButton.getStyleClass().add("default-button");
 
         box.getChildren().addAll(toCancelButton, toLoginButton);
@@ -162,7 +165,7 @@ public class LoginScene {
         return box;
     }
 
-    private void verifyLogin() {
+    private void verifyLogin(SceneManager sceneManager) {
         SimpleTextPopup loginErrorPopup = new SimpleTextPopup();
         Text errorText;
 
@@ -175,9 +178,13 @@ public class LoginScene {
 
         } else {
             // TODO: API-Call
-            boolean apiCallReturn = false;
+            boolean apiCallReturn = true;
             if (apiCallReturn) {
-                // TODO: Return to Hompage & disable login/signup buttons & display UserOverlay & show LogOut button
+                UserOverlay.initOverlay(true, usernameInput.getText().trim());
+                sceneManager.showHomeScene(true);
+                UserOverlay.showOverlay();
+                clearInputFields();
+
             } else {
                 usernameInput.getStyleClass().add("inputField-error");
                 passwordInput.getStyleClass().add("inputField-error");
@@ -185,6 +192,13 @@ public class LoginScene {
                 loginErrorPopup.displayPopup(errorText);
             }
         }
+    }
+
+    private void clearInputFields() {
+        usernameInput.getStyleClass().remove("inputField-error");
+        passwordInput.getStyleClass().remove("inputField-error");
+        usernameInput.clear();
+        passwordInput.clear();
     }
 
     public Pane getRoot() {
