@@ -98,12 +98,12 @@ public class SignUpScene {
         title.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 60));
         title.setTextAlignment(TextAlignment.CENTER);
 
-        // Create and format credentials
-        Text credentials = new Text(I18nLoader.getText("scene.title.signUp"));
-        credentials.setFont(Font.font("Courier New", FontWeight.BOLD, 40));
-        credentials.setTextAlignment(TextAlignment.CENTER);
+        // Create and format subTitle
+        Text subTitle = new Text(I18nLoader.getText("scene.title.signUp"));
+        subTitle.setFont(Font.font("Courier New", FontWeight.BOLD, 40));
+        subTitle.setTextAlignment(TextAlignment.CENTER);
 
-        box.getChildren().addAll(title, credentials);
+        box.getChildren().addAll(title, subTitle);
 
         return box;
     }

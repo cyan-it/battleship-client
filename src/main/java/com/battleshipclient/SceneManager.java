@@ -3,6 +3,7 @@ package com.battleshipclient;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 import com.battleshipclient.scenes.*;
+import com.battleshipclient.scenes.game.PlayGameScene;
 import javafx.scene.layout.Pane;
 
 public class SceneManager {

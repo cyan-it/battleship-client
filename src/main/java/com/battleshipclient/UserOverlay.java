@@ -21,6 +21,10 @@ public class UserOverlay {
     private static String username;
     public static boolean isLoggedIn;
 
+    public static String getUsername() {
+        return username;
+    }
+
     public static void initOverlay(boolean isVisible, String user) {
         if (isVisible && !isLoggedIn) {
             username = user;

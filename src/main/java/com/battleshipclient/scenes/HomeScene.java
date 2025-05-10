@@ -20,6 +20,8 @@ public class HomeScene {
 
     private final VBox logout;
     private final VBox account;
+    private final Button toCreateGameSceneButton = new Button();
+    private final Button toJoinGameSceneButton = new Button();
     private final Pane root;
 
     public HomeScene(SceneManager sceneManager) {
@@ -109,13 +111,19 @@ public class HomeScene {
         box.setAlignment(Pos.CENTER);
 
         // Create and format createGame Button
-        Button toCreateGameSceneButton = new Button(I18nLoader.getText("scene.title.createGame"));
-        toCreateGameSceneButton.setOnAction(_ -> sceneManager.showCreateGameScene());
+        toCreateGameSceneButton.setText(I18nLoader.getText("scene.title.createGame"));
+        toCreateGameSceneButton.setOnAction(_ -> {
+            sceneManager.showCreateGameScene();
+            UserOverlay.showOverlay();
+        });
         toCreateGameSceneButton.getStyleClass().add("game-button");
 
         // Create and format joinGame Button
-        Button toJoinGameSceneButton = new Button(I18nLoader.getText("scene.title.joinGame"));
-        toJoinGameSceneButton.setOnAction(_ -> sceneManager.showJoinGameScene());
+        toJoinGameSceneButton.setText(I18nLoader.getText("scene.title.joinGame"));
+        toJoinGameSceneButton.setOnAction(_ -> {
+            sceneManager.showJoinGameScene();
+            UserOverlay.showOverlay();
+        });
         toJoinGameSceneButton.getStyleClass().add("game-button");
 
         box.getChildren().addAll(toCreateGameSceneButton, toJoinGameSceneButton);
@@ -181,6 +189,9 @@ public class HomeScene {
 
             logout.setDisable(false);
             logout.setVisible(true);
+        } else {
+            toCreateGameSceneButton.setDisable(true);
+            toJoinGameSceneButton.setDisable(true);
         }
 
         return root;
