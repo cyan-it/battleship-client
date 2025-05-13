@@ -2,6 +2,8 @@ package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.*;
+import com.battleshipclient.utils.I18nLoader;
+import com.battleshipclient.utils.SimpleConfirmationPopup;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.*;

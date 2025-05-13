@@ -5,6 +5,7 @@ import com.almasb.fxgl.app.GameSettings;
 import com.almasb.fxgl.dsl.FXGL;
 import com.almasb.fxgl.input.Input;
 import com.almasb.fxgl.input.UserAction;
+import com.battleshipclient.utils.I18nLoader;
 import javafx.scene.ImageCursor;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -14,8 +15,6 @@ import java.util.Objects;
 import static com.almasb.fxgl.dsl.FXGL.*;
 
 public class Main extends GameApplication {
-
-    private SceneManager sceneManager;
 
     @Override
     protected void initSettings(@NotNull GameSettings settings) {
@@ -32,7 +31,7 @@ public class Main extends GameApplication {
         Image mouseCursorImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/Mouse_Cursor.png")).toExternalForm());
         getGameScene().setCursor(new ImageCursor(mouseCursorImage));
 
-        sceneManager = new SceneManager();
+        SceneManager sceneManager = new SceneManager();
         sceneManager.showHomeScene(false);
 
         // Event handler for forcefully closing the app

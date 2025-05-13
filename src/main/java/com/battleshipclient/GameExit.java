@@ -1,6 +1,8 @@
 package com.battleshipclient;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.battleshipclient.status.UserStatus;
+import com.battleshipclient.utils.I18nLoader;
 import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
@@ -18,10 +20,11 @@ public class GameExit {
 
     // Exit the game after confirmation
     public void exit() {
-        // TODO: When inGame -> not possible - has to surrender first
-        showConfirmationPopup(confirmed -> {
-            if (confirmed) Platform.exit();
-        });
+        if (!UserStatus.getInGameStatus()) {
+            showConfirmationPopup(confirmed -> {
+                if (confirmed) Platform.exit();
+            });
+        }
     }
 
     // Load confirmation popup and callback answer
@@ -44,12 +47,12 @@ public class GameExit {
         toCancelButton.getStyleClass().add("gameExit-cancel-button");
 
         // Button actions
-        toConfirmButton.setOnAction(actionEvent -> {
+        toConfirmButton.setOnAction(_ -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(true);
         });
 
-        toCancelButton.setOnAction(actionEvent -> {
+        toCancelButton.setOnAction(_ -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(false);
         });

@@ -1,4 +1,4 @@
-package com.battleshipclient;
+package com.battleshipclient.utils;
 
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.geometry.Pos;
@@ -34,12 +34,12 @@ public class SimpleConfirmationPopup {
         toCancelButton.getStyleClass().add("gameExit-cancel-button");
 
         // Button actions
-        toConfirmButton.setOnAction(actionEvent -> {
+        toConfirmButton.setOnAction(_ -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(true);
         });
 
-        toCancelButton.setOnAction(actionEvent -> {
+        toCancelButton.setOnAction(_ -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(false);
         });

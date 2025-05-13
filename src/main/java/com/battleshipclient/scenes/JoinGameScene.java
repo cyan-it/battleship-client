@@ -1,11 +1,11 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.battleshipclient.I18nLoader;
+import com.battleshipclient.status.GameStatus;
+import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
-import com.battleshipclient.SimpleTextPopup;
+import com.battleshipclient.utils.SimpleTextPopup;
 import com.battleshipclient.UserOverlay;
-import com.battleshipclient.scenes.game.PlayGameScene;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -157,6 +157,7 @@ public class JoinGameScene {
     private void verifyKeyAndStartGame(SceneManager sceneManager) {
         // TODO: verify if key valid
         if (true) {
+            GameStatus.startGame(false);
             PlayGameScene playGame = new PlayGameScene(sceneManager);
             FXGL.getGameScene().clearUINodes();
             FXGL.getGameScene().addUINode(playGame.getRoot());

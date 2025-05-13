@@ -1,4 +1,4 @@
-package com.battleshipclient;
+package com.battleshipclient.utils;
 
 import com.almasb.fxgl.dsl.FXGL;
 import javafx.geometry.Pos;

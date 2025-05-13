@@ -1,4 +1,4 @@
-package com.battleshipclient;
+package com.battleshipclient.utils;
 
 import org.jetbrains.annotations.NotNull;
 

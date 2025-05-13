@@ -1,9 +1,9 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.battleshipclient.I18nLoader;
+import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
-import com.battleshipclient.SimpleTextPopup;
+import com.battleshipclient.utils.SimpleTextPopup;
 import com.battleshipclient.UserOverlay;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;

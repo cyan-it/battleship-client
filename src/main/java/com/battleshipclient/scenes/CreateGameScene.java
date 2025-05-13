@@ -1,10 +1,10 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.battleshipclient.I18nLoader;
+import com.battleshipclient.status.GameStatus;
+import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
 import com.battleshipclient.UserOverlay;
-import com.battleshipclient.scenes.game.PlayGameScene;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -22,9 +22,6 @@ import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
-
-import static com.almasb.fxgl.dsl.FXGL.getGameScene;
-import static com.almasb.fxgl.dsl.FXGL.play;
 
 
 public class CreateGameScene {
@@ -168,6 +165,7 @@ public class CreateGameScene {
 
         // TODO: get Websocket connection and display inGameScene (optional: take key? / user?)
 
+        GameStatus.startGame(true);
         PlayGameScene playGame = new PlayGameScene(sceneManager);
         FXGL.getGameScene().clearUINodes();
         FXGL.getGameScene().addUINode(playGame.getRoot());

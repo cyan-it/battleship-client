@@ -1,6 +1,7 @@
 package com.battleshipclient;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.battleshipclient.status.UserStatus;
 import javafx.geometry.Pos;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Region;
@@ -18,20 +19,14 @@ public class UserOverlay {
 
     private static HBox userOverlay;
 
-    private static String username;
-    public static boolean isLoggedIn;
-
-    public static String getUsername() {
-        return username;
-    }
-
     public static void initOverlay(boolean isVisible, String user) {
-        if (isVisible && !isLoggedIn) {
-            username = user;
-            isLoggedIn = true;
-        } else if (!isVisible && isLoggedIn) {
-            username = "";
-            isLoggedIn = false;
+        if (isVisible && !UserStatus.getIsLoggedIn()) {
+            UserStatus.setUsername(user);
+            UserStatus.setIsLoggedIn(true);
+
+        } else if (!isVisible && UserStatus.getIsLoggedIn()) {
+            UserStatus.setUsername("");
+            UserStatus.setIsLoggedIn(false);
         }
     }
 
@@ -43,7 +38,7 @@ public class UserOverlay {
         userOverlay.setMinWidth(Region.USE_COMPUTED_SIZE);
         userOverlay.setMaxWidth(Region.USE_COMPUTED_SIZE);
 
-        Text user = new Text(username);
+        Text user = new Text(UserStatus.getUsername());
         user.setFont(Font.font("Courier New", FontWeight.BOLD, 30));
         user.setTextAlignment(TextAlignment.RIGHT);
 
