@@ -1,6 +1,7 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.battleshipclient.ApiService;
 import com.battleshipclient.status.GameStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
@@ -156,8 +157,8 @@ public class CreateGameScene {
     }
 
     private void createGame(SceneManager sceneManager) {
-        // TODO: Await key generation -> then
-        gameKeyInput.setText("1234");
+        ApiService.createGame();
+        gameKeyInput.setText(GameStatus.getGameKey());
 
         // TODO: Await opponent join
         showLoadingOverlay();

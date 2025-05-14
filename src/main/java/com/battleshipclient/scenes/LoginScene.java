@@ -1,6 +1,8 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.battleshipclient.ApiService;
+import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
 import com.battleshipclient.utils.SimpleTextPopup;
@@ -177,9 +179,9 @@ public class LoginScene {
             loginErrorPopup.displayPopup(errorText);
 
         } else {
-            // TODO: API-Call
-            boolean apiCallReturn = true;
-            if (apiCallReturn) {
+            ApiService.loginUser(usernameInput.getText(), passwordInput.getText());
+
+            if (!Objects.equals(UserStatus.getAccessToken(), "")) {
                 UserOverlay.initOverlay(true, usernameInput.getText().trim());
                 sceneManager.showHomeScene(true);
                 UserOverlay.showOverlay();

@@ -1,6 +1,7 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.battleshipclient.ApiService;
 import com.battleshipclient.status.GameStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
@@ -155,8 +156,9 @@ public class JoinGameScene {
     }
 
     private void verifyKeyAndStartGame(SceneManager sceneManager) {
-        // TODO: verify if key valid
-        if (true) {
+        ApiService.joinGame(gameKeyInput.getText());
+
+        if (!Objects.equals(GameStatus.getOpponentUserName(), "")) {
             GameStatus.startGame(false);
             PlayGameScene playGame = new PlayGameScene(sceneManager);
             FXGL.getGameScene().clearUINodes();

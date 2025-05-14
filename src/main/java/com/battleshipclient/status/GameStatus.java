@@ -1,7 +1,8 @@
 package com.battleshipclient.status;
 
+import com.battleshipclient.enums.HitType;
 import com.battleshipclient.records.Ship;
-import com.battleshipclient.records.ShipType;
+import com.battleshipclient.enums.ShipType;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -12,15 +13,52 @@ import java.util.List;
 public class GameStatus {
 
     private static boolean gameStarted = false;
+    private static String gameKey;
+    private static String opponentUserName;
     private static final BooleanProperty isMyTurn = new SimpleBooleanProperty();
     private static boolean allShipsSet = false;
+    private static boolean allShipsSetOpponent = false;
 
     private static final List<Ship> ships = new ArrayList<>();
+
+    private static HitType currentHitType;
 
     private static int numberOfSize2ShipsToBeSet;
     private static int numberOfSize3ShipsToBeSet;
     private static int numberOfSize4ShipsToBeSet;
     private static int numberOfSize5ShipsToBeSet;
+
+    public static HitType getCurrentHitType() {
+        return currentHitType;
+    }
+
+    public static void setCurrentHitType(HitType type) {
+        currentHitType = type;
+    }
+
+    public static String getOpponentUserName() {
+        return opponentUserName;
+    }
+
+    public static void setOpponentUserName(String name) {
+        opponentUserName = name;
+    }
+
+    public static String getGameKey() {
+        return gameKey;
+    }
+
+    public static void setGameKey(String key) {
+        gameKey = key;
+    }
+
+    public static void setAllShipsSetOpponent() {
+        allShipsSetOpponent = true;
+    }
+
+    public static boolean allShipsSetOpponent() {
+        return allShipsSetOpponent;
+    }
 
     public static void startGame(boolean gameCreated) {
         gameStarted = true;

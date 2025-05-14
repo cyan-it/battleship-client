@@ -2,6 +2,7 @@ package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.*;
+import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.utils.SimpleConfirmationPopup;
 import javafx.geometry.Pos;
@@ -173,6 +174,7 @@ public class HomeScene {
                     UserOverlay.initOverlay(false, "");
                     UserOverlay.disableOverlay();
                     sceneManager.showHomeScene(false);
+                    UserStatus.setAccessToken(null);
                 }
             });
         });

@@ -1,4 +1,4 @@
-package com.battleshipclient.records;
+package com.battleshipclient.enums;
 
 public enum ShipType {
     SMALL,

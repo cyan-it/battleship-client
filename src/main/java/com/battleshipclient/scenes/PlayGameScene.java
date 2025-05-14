@@ -1,6 +1,8 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
+import com.battleshipclient.ApiService;
+import com.battleshipclient.enums.HitType;
 import com.battleshipclient.status.GameStatus;
 import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
@@ -56,7 +58,7 @@ public class PlayGameScene {
         UserStatus.setInGameStatus(true);
         VBox header = setHeaderBoxParameters(new VBox(20));
         HBox fields = setFieldsBoxParameters(new HBox(200));
-        HBox ships = setShipPlaceholder(new HBox(10));
+        HBox ships = setShipPlaceholder(new HBox(30));
         HBox actionButtons = setActionButtons(new HBox(40), sceneManager);
 
         this.root = setScene(header, fields, actionButtons, ships);
@@ -112,12 +114,9 @@ public class PlayGameScene {
     @NotNull
     @Contract("_ -> param1")
     private VBox setHeaderBoxParameters(@NotNull VBox box) {
-        // TODO: get Opponent name
-        String opponentName = "Tobi";
-
         box.setAlignment(Pos.TOP_CENTER);
 
-        Text title = new Text(UserStatus.getUsername() + "  " + I18nLoader.getText("inGame.versus") + "  " + opponentName);
+        Text title = new Text(UserStatus.getUsername() + "  " + I18nLoader.getText("inGame.versus") + "  " + GameStatus.getOpponentUserName());
         title.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 60));
         title.setTextAlignment(TextAlignment.CENTER);
         title.getStyleClass().add("board-text");
@@ -163,6 +162,17 @@ public class PlayGameScene {
         myBoard = new GridPane();
 
         for (int col = 0; col <= 10; col++) {
+
+            ColumnConstraints colConstraints = new ColumnConstraints(40);
+            colConstraints.setFillWidth(true);
+            colConstraints.setHgrow(Priority.NEVER);
+            myBoard.getColumnConstraints().add(colConstraints);
+
+            RowConstraints rowConstraints = new RowConstraints(40);
+            rowConstraints.setFillHeight(true);
+            rowConstraints.setVgrow(Priority.NEVER);
+            myBoard.getRowConstraints().add(rowConstraints);
+
             for (int row = 0; row <= 10; row++) {
                 StackPane cell = new StackPane();
                 cell.setPrefSize(40, 40);
@@ -185,20 +195,22 @@ public class PlayGameScene {
                     final int selectedCol = col;
                     final int selectedRow = row;
                     cell.setOnMouseClicked(_ -> {
-                        boolean outOfBounds = isShipVertical
-                                ? selectedRow + shipSize - 1 > 10
-                                : selectedCol + shipSize - 1 > 10;
+                        if (!GameStatus.allShipsSet()) {
+                            boolean outOfBounds = isShipVertical
+                                    ? selectedRow + shipSize - 1 > 10
+                                    : selectedCol + shipSize - 1 > 10;
 
-                        boolean canPlace = GameStatus.canPlaceShip(
-                                shipSize, isShipVertical, selectedCol - 1, selectedRow - 1);
+                            boolean canPlace = GameStatus.canPlaceShip(
+                                    shipSize, isShipVertical, selectedCol - 1, selectedRow - 1);
 
-                        if (outOfBounds || !canPlace) {
-                            notificationText.setFill(Color.RED);
-                            notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.invalid"));
-                        } else {
-                            shipRow = selectedRow;
-                            shipCol = selectedCol;
-                            isShipPlaced = true;
+                            if (outOfBounds || !canPlace) {
+                                notificationText.setFill(Color.RED);
+                                notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.invalid"));
+                            } else {
+                                shipRow = selectedRow;
+                                shipCol = selectedCol;
+                                isShipPlaced = true;
+                            }
                         }
                     });
                 }
@@ -210,10 +222,22 @@ public class PlayGameScene {
         return myBoard;
     }
 
+    @NotNull
     private GridPane setOpponentBoard() {
         GridPane opponentBoard = new GridPane();
 
         for (int col = 0; col <= 10; col++) {
+
+            ColumnConstraints colConstraints = new ColumnConstraints(40);
+            colConstraints.setFillWidth(true);
+            colConstraints.setHgrow(Priority.NEVER);
+            opponentBoard.getColumnConstraints().add(colConstraints);
+
+            RowConstraints rowConstraints = new RowConstraints(40);
+            rowConstraints.setFillHeight(true);
+            rowConstraints.setVgrow(Priority.NEVER);
+            opponentBoard.getRowConstraints().add(rowConstraints);
+
             for (int row = 0; row <= 10; row++) {
                 StackPane cell = new StackPane();
                 cell.setPrefSize(40, 40);
@@ -234,7 +258,7 @@ public class PlayGameScene {
                     cell.getChildren().add(label);
                 } else {
                     cell.setOnMouseClicked(_ -> {
-                        if (lockedCells.contains(cell) || !GameStatus.getIsMyTurnValue() || !GameStatus.allShipsSet()) {
+                        if (lockedCells.contains(cell) || !GameStatus.getIsMyTurnValue() || !GameStatus.allShipsSet() || !GameStatus.allShipsSetOpponent()) {
                             return;
                         }
 
@@ -269,7 +293,7 @@ public class PlayGameScene {
             SimpleConfirmationPopup confirmationPopup = new SimpleConfirmationPopup();
             confirmationPopup.displayPopup(confirmationText, confirmed -> {
                 if (confirmed) {
-                    // TODO: Tell backend that surrendered
+                    ApiService.surrender();
                     UserStatus.setInGameStatus(false);
                     sceneManager.showHomeScene(true);
                     UserOverlay.showOverlay();
@@ -281,17 +305,17 @@ public class PlayGameScene {
         toMakeHit = new Button(I18nLoader.getText("inGame.makeHit"));
         toMakeHit.setOnAction(_ -> {
             if (selectedCell != null & currentDot != null) {
-                // TODO: Check if Hit in backend
-                boolean isHit = true;
+                // TODO: Parameter holen und einfügen
+//                ApiService.hit();
 
-                if (isHit) {
+                if (GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.MISS || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.hit"));
                     notificationText.setFill(Color.LIGHTGREEN);
                 } else {
                     notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
                     notificationText.setFill(Color.YELLOW);
                 }
-                currentDot.setFill(isHit ? Color.RED : Color.WHITE);
+                currentDot.setFill(GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.MISS || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON ? Color.RED : Color.WHITE);
                 lockedCells.add(selectedCell);
 
                 selectedCell = null;
@@ -323,62 +347,34 @@ public class PlayGameScene {
         }
     }
 
-    private HBox setShipPlaceholder(HBox box) {
-        shipImageView = new ImageView();
+    @NotNull
+    @Contract("_ -> param1")
+    private HBox setShipPlaceholder(@NotNull HBox box) {
+        box.setAlignment(Pos.CENTER);
 
-        VBox counterBox = new VBox();
-        counterBox.setAlignment(Pos.BOTTOM_CENTER);
+        shipImageView = new ImageView();
 
         counterText = new Text();
         counterText.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 20));
         counterText.setTextAlignment(TextAlignment.CENTER);
         counterText.getStyleClass().add("board-text");
 
-        counterBox.getChildren().add(counterText);
+        Button toSetVerticalButton = new Button("H");
+        toSetVerticalButton.getStyleClass().add("vertical-button");
+        toSetVerticalButton.setOnAction(_ -> {
+            String oldText = toSetVerticalButton.getText();
+            String newText = Objects.equals(oldText, "H") ? "V" : "H";
+            isShipVertical = Objects.equals(newText, "V");
+            toSetVerticalButton.setText(newText);
+        });
 
-        box.getChildren().addAll(shipImageView, counterBox);
+        box.getChildren().addAll(shipImageView, counterText, toSetVerticalButton);
 
         return box;
     }
 
-//    private void placeShips() {
-//        for (int size = 2; size <= 5;) {
-//            shipSize = size;
-//            int counter;
-//            switch (size) {
-//                case 2:
-//                    counter = GameStatus.getNumberOfSize2ShipsToBeSet();
-//                    break;
-//                case 3:
-//                    counter = GameStatus.getNumberOfSize3ShipsToBeSet();
-//                    break;
-//                case 4:
-//                    counter = GameStatus.getNumberOfSize4ShipsToBeSet();
-//                    break;
-//                case 5:
-//                    counter = GameStatus.getNumberOfSize5ShipsToBeSet();
-//                    break;
-//                default:
-//                    counter = 0;
-//            }
-//
-//            if (counter == 0) {
-//                size++;
-//            } else {
-//                Image shipImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/ships/size_" + size + "_ship.png")).toExternalForm());
-//                shipImageView.setImage(shipImage);
-//                shipImageView.setFitWidth(40*size);
-//                shipImageView.setPreserveRatio(true);
-//
-//                counterText.setText(counter + "X");
-//
-//                // Wait for isShipPlaced = true
-//            };
-//        }
-//    }
-
     private void placeShips(int size) {
-        if (size > 5) return; // done placing
+        if (size > 5) return;
 
         int counter;
         switch (size) {
@@ -411,15 +407,29 @@ public class PlayGameScene {
             waitForPlacement.getKeyFrames().add(new KeyFrame(Duration.millis(100), _ -> {
                 if (isShipPlaced) {
                     waitForPlacement.stop();
+                    notificationText.setText("");
+                    counterText.setText(counter - 1 + "X");
 
                     int posY = isShipVertical ? 1 : shipSize;
                     int posX = isShipVertical ? shipSize : 1;
 
+                    if (isShipVertical) {
+                        shipImageInBoard.setRotate(90);
+                        shipImageInBoard.setFitWidth(40 * size);
+                        shipImageInBoard.setFitHeight(40);
+                        shipImageInBoard.setTranslateX((double) (-(40 * size - 40)) / 2);
+                    }
+
                     myBoard.add(shipImageInBoard, shipCol, shipRow, posY, posX);
 
                     GameStatus.placeShip(shipSize, isShipVertical, shipCol - 1, shipRow - 1);
-                    // TODO: Grids werden immer weiter nach außen verschoben
-                    placeShips(size); // repeat for same size if needed
+
+                    placeShips(size);
+
+                    if (GameStatus.allShipsSet()) {
+                        notificationText.setFill(Color.LIGHTGREEN);
+                        notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.allShipsPlaced"));
+                    }
                 }
             }));
             waitForPlacement.setCycleCount(Animation.INDEFINITE);
