@@ -328,11 +328,9 @@ public class PlayGameScene {
                 if (GameStatus.getCurrentHitType() == HitType.HIT) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.hit"));
                     notificationText.setFill(Color.LIGHTGREEN);
-
                 } else if (GameStatus.getCurrentHitType() == HitType.DESTROYED) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.shipDestroyed"));
                     notificationText.setFill(Color.LIGHTGREEN);
-
                 } else if (GameStatus.getCurrentHitType() == HitType.WON) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.won"));
                     notificationText.setFill(Color.LIGHTGREEN);
@@ -345,20 +343,22 @@ public class PlayGameScene {
                         GameStatus.setGameKey(null);
                         GameStatus.setOpponentUserName(null);
                     });
-                    notificationTextPause.play();
 
+                    notificationTextPause.play();
                 } else if (GameStatus.getCurrentHitType() == HitType.MISS) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
                     notificationText.setFill(Color.YELLOW);
 
+                    GameStatus.setOpponentTurn(true);
+                } else {
+                    GameStatus.setOpponentTurn(true);
                 }
+
                 currentDot.setFill(GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON ? Color.RED : Color.WHITE);
                 lockedCells.add(selectedCell);
 
                 selectedCell = null;
                 currentDot = null;
-
-                GameStatus.setOpponentTurn(true);
 
                 toMakeHit.setDisable(true);
             }
@@ -511,7 +511,7 @@ public class PlayGameScene {
 
         myBoard.add(crossImageInBoard, posY, posX, 1, 1);
     }
-    
+
     public Pane getRoot() {
         return root;
     }
