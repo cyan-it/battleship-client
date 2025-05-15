@@ -70,8 +70,8 @@ public class GameStatus {
         return allShipsSet;
     }
 
-    public static void setOpponentTurn(boolean isOpponentTurn) {
-        isMyTurn.set(isOpponentTurn);
+    public static void setIsMyTurn(boolean myTurn) {
+        isMyTurn.set(myTurn);
     }
 
     public static ObservableValue<? extends Boolean> getIsMyTurn() {

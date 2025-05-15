@@ -60,7 +60,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         webSocketClientService.getPlayGameScene().setCrossOnField(hitNotification.x(), hitNotification.y());
                         break;
                     case YOUR_TURN:
-                        GameStatus.setOpponentTurn(false);
+                        GameStatus.setIsMyTurn(true);
                         break;
                 }
             }

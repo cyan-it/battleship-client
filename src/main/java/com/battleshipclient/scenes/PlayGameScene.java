@@ -349,9 +349,9 @@ public class PlayGameScene {
                     notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
                     notificationText.setFill(Color.YELLOW);
 
-                    GameStatus.setOpponentTurn(true);
+                    GameStatus.setIsMyTurn(false);
                 } else {
-                    GameStatus.setOpponentTurn(true);
+                    GameStatus.setIsMyTurn(false);
                 }
 
                 currentDot.setFill(GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON ? Color.RED : Color.WHITE);
