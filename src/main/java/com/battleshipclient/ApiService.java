@@ -156,7 +156,10 @@ public class ApiService {
 
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
-            GameStatus.setCurrentHitType(HitType.valueOf(response.body()));
+            String responseBody = response.body();
+            String enumType = responseBody.substring(1, responseBody.length() - 1);
+
+            GameStatus.setCurrentHitType(HitType.valueOf(enumType));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
