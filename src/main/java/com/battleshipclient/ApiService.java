@@ -60,7 +60,6 @@ public class ApiService {
         try {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-            UserStatus.setIsLoggedIn(true);
             UserStatus.setAccessToken(response.body());
         } catch (Exception e) {
             throw new RuntimeException(e);

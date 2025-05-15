@@ -170,7 +170,8 @@ public class CreateGameScene {
     }
 
     public void afterPlayerJoined(String opponentName) {
-        hideLoadingOverlay();
+        FXGL.getGameScene().removeUINode(loadingOverlay);
+        GameStatus.setOpponentUserName(opponentName);
         GameStatus.startGame(true);
         PlayGameScene playGame = new PlayGameScene(sceneManager, webSocketService);
         FXGL.getGameScene().clearUINodes();
@@ -199,10 +200,6 @@ public class CreateGameScene {
         loadingOverlay.setTranslateY(FXGL.getAppHeight() / 2.0 - 220);
 
         FXGL.getGameScene().addUINode(loadingOverlay);
-    }
-
-    private void hideLoadingOverlay() {
-        FXGL.getGameScene().removeUINode(loadingOverlay);
     }
 
     private void clearInputFields() {

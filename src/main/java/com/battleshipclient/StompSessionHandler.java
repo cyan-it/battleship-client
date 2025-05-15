@@ -3,6 +3,7 @@ package com.battleshipclient;
 import com.battleshipclient.records.HitNotification;
 import com.battleshipclient.records.Notification;
 import com.battleshipclient.status.GameStatus;
+import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -23,6 +24,8 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
     public void afterConnected(StompSession session, @NotNull StompHeaders connectedHeaders) {
         String destination = "/user/queue/notification";
 
+        System.out.println("Subscribing to " + destination);
+
         session.subscribe(destination, new StompFrameHandler() {
             @NotNull
             @Override
@@ -34,11 +37,14 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
             public void handleFrame(@NotNull StompHeaders headers, Object payload) {
                 Notification notification = (Notification) payload;
 
+                System.out.println(payload);
+
                 switch (notification.type()) {
                     case PLAYER_JOINED_GAME:
                         String opponentName = (String) notification.data();
 
-                        webSocketClientService.getGameScene().afterPlayerJoined(opponentName);
+                        Platform.runLater(() -> webSocketClientService.getGameScene().afterPlayerJoined(opponentName));
+
                         break;
                     case GAME_READY:
                         GameStatus.setAllShipsSetOpponent();
