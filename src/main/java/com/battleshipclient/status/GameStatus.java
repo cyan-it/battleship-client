@@ -50,13 +50,11 @@ public class GameStatus {
         gameKey = key;
     }
 
-    public static void setAllShipsSetOpponent() {
-        allShipsSetOpponent = true;
-    }
-
     public static boolean allShipsSetOpponent() {
         return allShipsSetOpponent;
     }
+
+    public static void setAllShipsSetOpponent() { allShipsSetOpponent = true; }
 
     public static void startGame(boolean gameCreated) {
         gameStarted = true;

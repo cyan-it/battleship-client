@@ -2,6 +2,7 @@ package com.battleshipclient;
 
 import com.battleshipclient.records.HitNotification;
 import com.battleshipclient.records.Notification;
+import com.battleshipclient.status.GameStatus;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
@@ -40,7 +41,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         webSocketClientService.getGameScene().afterPlayerJoined(opponentName);
                         break;
                     case GAME_READY:
-                        webSocketClientService.getGameScene().afterReady();
+                        GameStatus.setAllShipsSetOpponent();
                         break;
                     case GAME_FINISHED:
                         webSocketClientService.getPlayGameScene().handleLose();
@@ -49,7 +50,12 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         webSocketClientService.getPlayGameScene().handleSurrender();
                         break;
                     case HIT, SHIP_DESTROYED:
-                        // TODO
+                        HitNotification hitNotification = (HitNotification) notification.data();
+
+                        webSocketClientService.getPlayGameScene().setCrossOnField(hitNotification.x(), hitNotification.y());
+                        break;
+                    case YOUR_TURN:
+
                         break;
                 }
             }

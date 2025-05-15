@@ -170,11 +170,7 @@ public class CreateGameScene {
     }
 
     public void afterPlayerJoined(String opponentName) {
-        // TODO: hideLoadingOverlay()
-        // TODO: get Websocket connection and display inGameScene (optional: take key? / user?)
-    }
-
-    public void afterReady() {
+        hideLoadingOverlay();
         GameStatus.startGame(true);
         PlayGameScene playGame = new PlayGameScene(sceneManager, webSocketService);
         FXGL.getGameScene().clearUINodes();

@@ -62,8 +62,6 @@ public class PlayGameScene {
     private int currentPlacedShipRow;
     private int currentPlacedShipCol;
 
-    // TODO: Set Hitmarker after Websocket
-
     public PlayGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
         this.sceneManager = sceneManager;
         UserStatus.setInGameStatus(true);
@@ -361,12 +359,7 @@ public class PlayGameScene {
                 selectedCell = null;
                 currentDot = null;
 
-                PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
-                notificationTextPause.setOnFinished(_ -> {
-                    notificationText.setText("");
-                    GameStatus.setOpponentTurn();
-                });
-                notificationTextPause.play();
+                GameStatus.setOpponentTurn();
 
                 toMakeHit.setDisable(true);
             }
@@ -511,7 +504,15 @@ public class PlayGameScene {
         }
     }
 
+    public void setCrossOnField(int posX, int posY) {
+        Image crossImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/cross.png")).toExternalForm());
+        ImageView crossImageInBoard = new ImageView(crossImage);
+        crossImageInBoard.setFitWidth(40);
+        crossImageInBoard.setFitHeight(40);
 
+        myBoard.add(crossImageInBoard, posY, posX, 1, 1);
+    }
+    
     public Pane getRoot() {
         return root;
     }

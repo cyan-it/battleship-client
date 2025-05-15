@@ -8,5 +8,6 @@ public enum NotificationType {
     PLAYER_JOINED_GAME,
     HIT,
     SHIP_DESTROYED,
+    YOUR_TURN,
 
 }
