@@ -271,9 +271,8 @@ public class PlayGameScene {
                     int finalCol = col;
                     int finalRow = row;
                     cell.setOnMouseClicked(_ -> {
-                        // TODO: maybe change ?
-                        hitPosX = finalRow - 1;
-                        hitPosY = finalCol - 1;
+                        hitPosX = finalCol - 1;
+                        hitPosY = finalRow - 1;
 
                         if (lockedCells.contains(cell) || !GameStatus.getIsMyTurnValue() || !GameStatus.allShipsSet() || !GameStatus.allShipsSetOpponent()) {
                             return;
@@ -359,7 +358,7 @@ public class PlayGameScene {
                 selectedCell = null;
                 currentDot = null;
 
-                GameStatus.setOpponentTurn();
+                GameStatus.setOpponentTurn(true);
 
                 toMakeHit.setDisable(true);
             }

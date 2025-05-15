@@ -44,7 +44,6 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         String opponentName = (String) notification.data();
 
                         Platform.runLater(() -> webSocketClientService.getGameScene().afterPlayerJoined(opponentName));
-
                         break;
                     case GAME_READY:
                         GameStatus.setAllShipsSetOpponent();
@@ -61,7 +60,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         webSocketClientService.getPlayGameScene().setCrossOnField(hitNotification.x(), hitNotification.y());
                         break;
                     case YOUR_TURN:
-
+                        GameStatus.setOpponentTurn(false);
                         break;
                 }
             }
