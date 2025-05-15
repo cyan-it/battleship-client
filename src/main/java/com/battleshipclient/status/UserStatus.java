@@ -3,7 +3,7 @@ package com.battleshipclient.status;
 public class UserStatus {
 
     private static boolean isInGame = false;
-    private static String username = "";
+    private static String username;
     private static boolean isLoggedIn = false;
     private static String accessToken;
 

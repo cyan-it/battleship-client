@@ -40,19 +40,23 @@ public class PlayGameScene {
     private Button toMakeHit;
     private StackPane selectedCell = null;
     private Circle currentDot = null;
+    private int hitPosX;
+    private int hitPosY;
     private final Set<StackPane> lockedCells = new HashSet<>();
 
     private Text notificationText;
 
-    private ImageView shipImageView;
-    private Text counterText;
-    private int shipSize;
-    private boolean isShipVertical;
-    private boolean isShipPlaced;
-    private int shipRow;
-    private int shipCol;
+    private ImageView imageViewOfShipOfCurrentType;
+    private Text counterTextOfShipsOfCurrentType;
+    private int currentSelectedShipSize;
+    private boolean currentSelectedShipIsVertical;
+    private boolean currentSelectedShipIsPlaced;
+    private int currentPlacedShipRow;
+    private int currentPlacedShipCol;
 
     private final Pane root;
+
+    // TODO: Set Hitmarker after Websocket
 
     public PlayGameScene(SceneManager sceneManager) {
         UserStatus.setInGameStatus(true);
@@ -196,20 +200,20 @@ public class PlayGameScene {
                     final int selectedRow = row;
                     cell.setOnMouseClicked(_ -> {
                         if (!GameStatus.allShipsSet()) {
-                            boolean outOfBounds = isShipVertical
-                                    ? selectedRow + shipSize - 1 > 10
-                                    : selectedCol + shipSize - 1 > 10;
+                            boolean outOfBounds = currentSelectedShipIsVertical
+                                    ? selectedRow + currentSelectedShipSize - 1 > 10
+                                    : selectedCol + currentSelectedShipSize - 1 > 10;
 
                             boolean canPlace = GameStatus.canPlaceShip(
-                                    shipSize, isShipVertical, selectedCol - 1, selectedRow - 1);
+                                    currentSelectedShipSize, currentSelectedShipIsVertical, selectedCol - 1, selectedRow - 1);
 
                             if (outOfBounds || !canPlace) {
                                 notificationText.setFill(Color.RED);
                                 notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.invalid"));
                             } else {
-                                shipRow = selectedRow;
-                                shipCol = selectedCol;
-                                isShipPlaced = true;
+                                currentPlacedShipRow = selectedRow;
+                                currentPlacedShipCol = selectedCol;
+                                currentSelectedShipIsPlaced = true;
                             }
                         }
                     });
@@ -257,7 +261,13 @@ public class PlayGameScene {
                     label.getStyleClass().add("board-label");
                     cell.getChildren().add(label);
                 } else {
+                    int finalCol = col;
+                    int finalRow = row;
                     cell.setOnMouseClicked(_ -> {
+                        // TODO: maybe change ?
+                        hitPosX = finalRow;
+                        hitPosY = finalCol;
+
                         if (lockedCells.contains(cell) || !GameStatus.getIsMyTurnValue() || !GameStatus.allShipsSet() || !GameStatus.allShipsSetOpponent()) {
                             return;
                         }
@@ -297,6 +307,8 @@ public class PlayGameScene {
                     UserStatus.setInGameStatus(false);
                     sceneManager.showHomeScene(true);
                     UserOverlay.showOverlay();
+                    GameStatus.setGameKey(null);
+                    GameStatus.setOpponentUserName(null);
                 }
             });
         });
@@ -305,17 +317,36 @@ public class PlayGameScene {
         toMakeHit = new Button(I18nLoader.getText("inGame.makeHit"));
         toMakeHit.setOnAction(_ -> {
             if (selectedCell != null & currentDot != null) {
-                // TODO: Parameter holen und einfügen
-//                ApiService.hit();
+                ApiService.hit(hitPosX, hitPosY);
 
-                if (GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.MISS || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON) {
+                if (GameStatus.getCurrentHitType() == HitType.HIT) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.hit"));
                     notificationText.setFill(Color.LIGHTGREEN);
-                } else {
+
+                } else if (GameStatus.getCurrentHitType() == HitType.DESTROYED) {
+                    notificationText.setText(I18nLoader.getText("inGame.notification.shipDestroyed"));
+                    notificationText.setFill(Color.LIGHTGREEN);
+
+                } else if (GameStatus.getCurrentHitType() == HitType.WON) {
+                    notificationText.setText(I18nLoader.getText("inGame.notification.won"));
+                    notificationText.setFill(Color.LIGHTGREEN);
+
+                    PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
+                    notificationTextPause.setOnFinished(_ -> {
+                        UserStatus.setInGameStatus(false);
+                        sceneManager.showHomeScene(true);
+                        UserOverlay.showOverlay();
+                        GameStatus.setGameKey(null);
+                        GameStatus.setOpponentUserName(null);
+                    });
+                    notificationTextPause.play();
+
+                } else if (GameStatus.getCurrentHitType() == HitType.MISS) {
                     notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
                     notificationText.setFill(Color.YELLOW);
+
                 }
-                currentDot.setFill(GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.MISS || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON ? Color.RED : Color.WHITE);
+                currentDot.setFill(GameStatus.getCurrentHitType() == HitType.HIT || GameStatus.getCurrentHitType() == HitType.DESTROYED || GameStatus.getCurrentHitType() == HitType.WON ? Color.RED : Color.WHITE);
                 lockedCells.add(selectedCell);
 
                 selectedCell = null;
@@ -352,23 +383,23 @@ public class PlayGameScene {
     private HBox setShipPlaceholder(@NotNull HBox box) {
         box.setAlignment(Pos.CENTER);
 
-        shipImageView = new ImageView();
+        imageViewOfShipOfCurrentType = new ImageView();
 
-        counterText = new Text();
-        counterText.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 20));
-        counterText.setTextAlignment(TextAlignment.CENTER);
-        counterText.getStyleClass().add("board-text");
+        counterTextOfShipsOfCurrentType = new Text();
+        counterTextOfShipsOfCurrentType.setFont(Font.font("Courier New", FontWeight.EXTRA_BOLD, 20));
+        counterTextOfShipsOfCurrentType.setTextAlignment(TextAlignment.CENTER);
+        counterTextOfShipsOfCurrentType.getStyleClass().add("board-text");
 
         Button toSetVerticalButton = new Button("H");
         toSetVerticalButton.getStyleClass().add("vertical-button");
         toSetVerticalButton.setOnAction(_ -> {
             String oldText = toSetVerticalButton.getText();
             String newText = Objects.equals(oldText, "H") ? "V" : "H";
-            isShipVertical = Objects.equals(newText, "V");
+            currentSelectedShipIsVertical = Objects.equals(newText, "V");
             toSetVerticalButton.setText(newText);
         });
 
-        box.getChildren().addAll(shipImageView, counterText, toSetVerticalButton);
+        box.getChildren().addAll(imageViewOfShipOfCurrentType, counterTextOfShipsOfCurrentType, toSetVerticalButton);
 
         return box;
     }
@@ -388,41 +419,41 @@ public class PlayGameScene {
         if (counter == 0) {
             placeShips(size + 1);
         } else {
-            shipSize = size;
+            currentSelectedShipSize = size;
             Image shipImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/ships/size_" + size + "_ship.png")).toExternalForm());
-            shipImageView.setImage(shipImage);
-            shipImageView.setFitWidth(40 * size);
-            shipImageView.setFitHeight(40);
+            imageViewOfShipOfCurrentType.setImage(shipImage);
+            imageViewOfShipOfCurrentType.setFitWidth(40 * size);
+            imageViewOfShipOfCurrentType.setFitHeight(40);
 
             ImageView shipImageInBoard = new ImageView(shipImage);
             shipImageInBoard.setFitWidth(40 * size);
             shipImageInBoard.setFitHeight(40);
 
-            counterText.setText(counter + "X");
+            counterTextOfShipsOfCurrentType.setText(counter + "X");
 
-            isShipPlaced = false;
+            currentSelectedShipIsPlaced = false;
 
             // Poll every 100ms to check if the ship has been placed
             Timeline waitForPlacement = new Timeline();
             waitForPlacement.getKeyFrames().add(new KeyFrame(Duration.millis(100), _ -> {
-                if (isShipPlaced) {
+                if (currentSelectedShipIsPlaced) {
                     waitForPlacement.stop();
                     notificationText.setText("");
-                    counterText.setText(counter - 1 + "X");
+                    counterTextOfShipsOfCurrentType.setText(counter - 1 + "X");
 
-                    int posY = isShipVertical ? 1 : shipSize;
-                    int posX = isShipVertical ? shipSize : 1;
+                    int posY = currentSelectedShipIsVertical ? 1 : currentSelectedShipSize;
+                    int posX = currentSelectedShipIsVertical ? currentSelectedShipSize : 1;
 
-                    if (isShipVertical) {
+                    if (currentSelectedShipIsVertical) {
                         shipImageInBoard.setRotate(90);
                         shipImageInBoard.setFitWidth(40 * size);
                         shipImageInBoard.setFitHeight(40);
                         shipImageInBoard.setTranslateX((double) (-(40 * size - 40)) / 2);
                     }
 
-                    myBoard.add(shipImageInBoard, shipCol, shipRow, posY, posX);
+                    myBoard.add(shipImageInBoard, currentPlacedShipCol, currentPlacedShipRow, posY, posX);
 
-                    GameStatus.placeShip(shipSize, isShipVertical, shipCol - 1, shipRow - 1);
+                    GameStatus.placeShip(currentSelectedShipSize, currentSelectedShipIsVertical, currentPlacedShipCol - 1, currentPlacedShipRow - 1);
 
                     placeShips(size);
 

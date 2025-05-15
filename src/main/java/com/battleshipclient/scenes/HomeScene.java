@@ -175,6 +175,7 @@ public class HomeScene {
                     UserOverlay.disableOverlay();
                     sceneManager.showHomeScene(false);
                     UserStatus.setAccessToken(null);
+                    // TODO: Websocket disconnect
                 }
             });
         });
