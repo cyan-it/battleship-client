@@ -1,6 +1,8 @@
 package com.battleshipclient;
 
+import com.battleshipclient.records.HitNotification;
 import com.battleshipclient.records.Notification;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
@@ -10,28 +12,45 @@ import java.lang.reflect.Type;
 
 public class StompSessionHandler extends StompSessionHandlerAdapter {
 
-    private final String destination = "/user/queue/notification";
+    private final WebSocketClientService webSocketClientService;
+
+    public StompSessionHandler(WebSocketClientService webSocketClientService) {
+        this.webSocketClientService = webSocketClientService;
+    }
 
     @Override
-    public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
+    public void afterConnected(StompSession session, @NotNull StompHeaders connectedHeaders) {
+        String destination = "/user/queue/notification";
 
         session.subscribe(destination, new StompFrameHandler() {
+            @NotNull
             @Override
-            public Type getPayloadType(StompHeaders headers) {
+            public Type getPayloadType(@NotNull StompHeaders headers) {
                 return Notification.class;
             }
 
             @Override
-            public void handleFrame(StompHeaders headers, Object payload) {
+            public void handleFrame(@NotNull StompHeaders headers, Object payload) {
                 Notification notification = (Notification) payload;
 
                 switch (notification.type()) {
-                    case PLAYER_JOINED_GAME ->
-                    case GAME_READY ->
-                    case HIT ->
-                    case SHIP_DESTROYED ->
-                    case OPPONENT_SURRENDERED ->
-                    case GAME_FINISHED ->
+                    case PLAYER_JOINED_GAME:
+                        String opponentName = (String) notification.data();
+
+                        webSocketClientService.getGameScene().afterPlayerJoined(opponentName);
+                        break;
+                    case GAME_READY:
+                        webSocketClientService.getGameScene().afterReady();
+                        break;
+                    case GAME_FINISHED:
+                        webSocketClientService.getPlayGameScene().handleLose();
+                        break;
+                    case OPPONENT_SURRENDERED:
+                        webSocketClientService.getPlayGameScene().handleSurrender();
+                        break;
+                    case HIT, SHIP_DESTROYED:
+                        // TODO
+                        break;
                 }
             }
         });

@@ -1,19 +1,24 @@
 package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
-import com.battleshipclient.*;
+import com.battleshipclient.SceneManager;
+import com.battleshipclient.UserOverlay;
+import com.battleshipclient.WebSocketClientService;
 import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.utils.SimpleConfirmationPopup;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -22,14 +27,16 @@ import java.util.Objects;
 public class HomeScene {
 
     private final VBox logout;
+    private final WebSocketClientService webSocketService;
     private final VBox account;
     private final Button toCreateGameSceneButton = new Button();
     private final Button toJoinGameSceneButton = new Button();
     private final Pane root;
 
-    public HomeScene(SceneManager sceneManager) {
+    public HomeScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
         account = setAccountBoxParameters(new VBox(20), sceneManager);
         logout = setLogOutBoxParameters(sceneManager);
+        this.webSocketService = webSocketService;
         HBox game = setGameBoxParameters(new HBox(80), sceneManager);
         VBox header = setHeaderBoxParameters(new VBox(20));
 
@@ -175,7 +182,8 @@ public class HomeScene {
                     UserOverlay.disableOverlay();
                     sceneManager.showHomeScene(false);
                     UserStatus.setAccessToken(null);
-                    // TODO: Websocket disconnect
+
+                    webSocketService.disconnect();
                 }
             });
         });

@@ -35,9 +35,12 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(_ -> loginUser(username, password))
-                .exceptionally(_ -> null);
+        try {
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+            loginUser(username, password);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void loginUser(String username, String password) {
@@ -54,13 +57,14 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(token -> {
-                    UserStatus.setIsLoggedIn(true);
-                    UserStatus.setAccessToken(token.body());
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
-                })
-                .exceptionally(_ -> null);
+            UserStatus.setIsLoggedIn(true);
+            UserStatus.setAccessToken(response.body());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void createGame() {
@@ -71,9 +75,12 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(gameKey -> GameStatus.setGameKey(gameKey.body()))
-                .exceptionally(_ -> null);
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            GameStatus.setGameKey(response.body());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void joinGame(String gameKey) {
@@ -84,13 +91,15 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.ofString(gameKey))
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> {
-                    JoinGameResponse joinResponse = gson.fromJson(response.body(), JoinGameResponse.class);
-                    GameStatus.setOpponentUserName(joinResponse.challengerName());
+        try {
 
-                })
-                .exceptionally(_ -> null);
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+
+            JoinGameResponse joinResponse = gson.fromJson(response.body(), JoinGameResponse.class);
+            GameStatus.setOpponentUserName(joinResponse.challengerName());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void setupBoard(List<Ship> ships) {
@@ -109,11 +118,11 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.ofString(gson.toJson(result)))
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(_ -> {
-                    // Do nothing - already validated in Frontend
-                })
-                .exceptionally(_ -> null);
+        try {
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void surrender() {
@@ -124,11 +133,11 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.noBody())
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(_ -> {
-                    // Do nothing
-                })
-                .exceptionally(_ -> null);
+        try {
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static void hit(int posX, int posY) {
@@ -146,8 +155,11 @@ public class ApiService {
                 .POST(HttpRequest.BodyPublishers.ofString(body))
                 .build();
 
-        client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
-                .thenAccept(response -> GameStatus.setCurrentHitType(HitType.valueOf(response.body())))
-                .exceptionally(_ -> null);
+        try {
+            HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+            GameStatus.setCurrentHitType(HitType.valueOf(response.body()));
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }

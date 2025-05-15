@@ -1,8 +1,8 @@
 package com.battleshipclient.status;
 
 import com.battleshipclient.enums.HitType;
-import com.battleshipclient.records.Ship;
 import com.battleshipclient.enums.ShipType;
+import com.battleshipclient.records.Ship;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.value.ObservableValue;
@@ -12,15 +12,13 @@ import java.util.List;
 
 public class GameStatus {
 
+    private static final BooleanProperty isMyTurn = new SimpleBooleanProperty();
+    private static final List<Ship> ships = new ArrayList<>();
     private static boolean gameStarted = false;
     private static String gameKey;
     private static String opponentUserName;
-    private static final BooleanProperty isMyTurn = new SimpleBooleanProperty();
     private static boolean allShipsSet = false;
     private static boolean allShipsSetOpponent = false;
-
-    private static final List<Ship> ships = new ArrayList<>();
-
     private static HitType currentHitType;
 
     private static int numberOfSize2ShipsToBeSet;
@@ -71,7 +69,7 @@ public class GameStatus {
     }
 
     public static boolean allShipsSet() {
-        return  allShipsSet;
+        return allShipsSet;
     }
 
     public static void setOpponentTurn() {
@@ -83,7 +81,7 @@ public class GameStatus {
     }
 
     public static boolean getIsMyTurnValue() {
-        return  isMyTurn.get();
+        return isMyTurn.get();
     }
 
     public static int getNumberOfSize2ShipsToBeSet() {
@@ -100,6 +98,10 @@ public class GameStatus {
 
     public static int getNumberOfSize5ShipsToBeSet() {
         return numberOfSize5ShipsToBeSet;
+    }
+
+    public static List<Ship> getShips() {
+        return ships;
     }
 
     public static void placeShip(int shipSize, boolean isVertical, int posX, int posY) {
@@ -131,7 +133,7 @@ public class GameStatus {
     }
 
     private static boolean allShipsPlaced() {
-        return  numberOfSize2ShipsToBeSet == 0 &&
+        return numberOfSize2ShipsToBeSet == 0 &&
                 numberOfSize3ShipsToBeSet == 0 &&
                 numberOfSize4ShipsToBeSet == 0 &&
                 numberOfSize5ShipsToBeSet == 0;

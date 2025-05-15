@@ -14,13 +14,13 @@ public class SceneManager {
      private final Pane loginScene;
      private final Pane signupScene;
 
-     public SceneManager() {
-          homeScene = new HomeScene(this).getRoot(false);
-          homeSceneLoggedIn = new HomeScene(this).getRoot(true);
-          createGameScene = new CreateGameScene(this).getRoot();
-          joinGameScene = new JoinGameScene(this).getRoot();
-          loginScene = new LoginScene(this).getRoot();
-          signupScene = new SignUpScene(this).getRoot();
+     public SceneManager(WebSocketClientService webSocketService) {
+          homeScene = new HomeScene(this, webSocketService).getRoot(false);
+          homeSceneLoggedIn = new HomeScene(this, webSocketService).getRoot(true);
+          createGameScene = new CreateGameScene(this, webSocketService).getRoot();
+          joinGameScene = new JoinGameScene(this, webSocketService).getRoot();
+          loginScene = new LoginScene(this, webSocketService).getRoot();
+          signupScene = new SignUpScene(this, webSocketService).getRoot();
      }
 
      public void showHomeScene(boolean isLoggedIn) {

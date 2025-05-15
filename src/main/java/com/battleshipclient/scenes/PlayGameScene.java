@@ -2,13 +2,14 @@ package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.ApiService;
+import com.battleshipclient.SceneManager;
+import com.battleshipclient.UserOverlay;
+import com.battleshipclient.WebSocketClientService;
 import com.battleshipclient.enums.HitType;
 import com.battleshipclient.status.GameStatus;
 import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
-import com.battleshipclient.SceneManager;
 import com.battleshipclient.utils.SimpleConfirmationPopup;
-import com.battleshipclient.UserOverlay;
 import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
@@ -16,9 +17,17 @@ import javafx.animation.Timeline;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.RowConstraints;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -35,17 +44,16 @@ import java.util.Set;
 
 public class PlayGameScene {
 
+    private final SceneManager sceneManager;
+    private final Set<StackPane> lockedCells = new HashSet<>();
+    private final Pane root;
     private GridPane myBoard;
-
     private Button toMakeHit;
     private StackPane selectedCell = null;
     private Circle currentDot = null;
     private int hitPosX;
     private int hitPosY;
-    private final Set<StackPane> lockedCells = new HashSet<>();
-
     private Text notificationText;
-
     private ImageView imageViewOfShipOfCurrentType;
     private Text counterTextOfShipsOfCurrentType;
     private int currentSelectedShipSize;
@@ -54,11 +62,10 @@ public class PlayGameScene {
     private int currentPlacedShipRow;
     private int currentPlacedShipCol;
 
-    private final Pane root;
-
     // TODO: Set Hitmarker after Websocket
 
-    public PlayGameScene(SceneManager sceneManager) {
+    public PlayGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
+        this.sceneManager = sceneManager;
         UserStatus.setInGameStatus(true);
         VBox header = setHeaderBoxParameters(new VBox(20));
         HBox fields = setFieldsBoxParameters(new HBox(200));
@@ -71,6 +78,8 @@ public class PlayGameScene {
 
         setOpponentTurnNotification(GameStatus.getIsMyTurnValue());
         GameStatus.getIsMyTurn().addListener((_, _, newVal) -> setOpponentTurnNotification(newVal));
+
+        webSocketService.setPlayGameScene(this);
     }
 
     @NotNull
@@ -371,6 +380,36 @@ public class PlayGameScene {
         return box;
     }
 
+    public void handleLose() {
+        notificationText.setText(I18nLoader.getText("inGame.notification.lose"));
+        notificationText.setFill(Color.RED);
+
+        PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
+        notificationTextPause.setOnFinished(_ -> {
+            UserStatus.setInGameStatus(false);
+            sceneManager.showHomeScene(true);
+            UserOverlay.showOverlay();
+            GameStatus.setGameKey(null);
+            GameStatus.setOpponentUserName(null);
+        });
+        notificationTextPause.play();
+    }
+
+    public void handleSurrender() {
+        notificationText.setText(I18nLoader.getText("inGame.notification.opponentSurrendered"));
+        notificationText.setFill(Color.RED);
+
+        PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
+        notificationTextPause.setOnFinished(_ -> {
+            UserStatus.setInGameStatus(false);
+            sceneManager.showHomeScene(true);
+            UserOverlay.showOverlay();
+            GameStatus.setGameKey(null);
+            GameStatus.setOpponentUserName(null);
+        });
+        notificationTextPause.play();
+    }
+
     private void setOpponentTurnNotification(boolean isMyTurn) {
         if (!isMyTurn) {
             notificationText.setFill(Color.RED);
@@ -405,7 +444,9 @@ public class PlayGameScene {
     }
 
     private void placeShips(int size) {
-        if (size > 5) return;
+        if (size > 5) {
+            return;
+        }
 
         int counter;
         switch (size) {
@@ -458,6 +499,8 @@ public class PlayGameScene {
                     placeShips(size);
 
                     if (GameStatus.allShipsSet()) {
+                        ApiService.setupBoard(GameStatus.getShips());
+
                         notificationText.setFill(Color.LIGHTGREEN);
                         notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.allShipsPlaced"));
                     }

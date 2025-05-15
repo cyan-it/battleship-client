@@ -2,10 +2,11 @@ package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.ApiService;
-import com.battleshipclient.status.GameStatus;
-import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
 import com.battleshipclient.UserOverlay;
+import com.battleshipclient.WebSocketClientService;
+import com.battleshipclient.status.GameStatus;
+import com.battleshipclient.utils.I18nLoader;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -13,11 +14,11 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.TextAlignment;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -27,17 +28,23 @@ import java.util.Objects;
 
 public class CreateGameScene {
 
+    private final SceneManager sceneManager;
+    @NotNull
+    private final WebSocketClientService webSocketService;
+    private final Pane root;
     private TextField gameKeyInput;
     private VBox loadingOverlay;
 
-    private final Pane root;
-
-    public CreateGameScene(SceneManager sceneManager) {
+    public CreateGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
+        this.sceneManager = sceneManager;
+        this.webSocketService = webSocketService;
         VBox header = setHeaderBoxParameters(new VBox(20));
         VBox keyDisplay = setKeyParameter(new VBox(40));
         HBox navigation = setNavigationButtons(new HBox(40), sceneManager);
 
         this.root = setScene(header, keyDisplay, navigation);
+
+        webSocketService.setGameScene(this);
     }
 
     @NotNull
@@ -72,7 +79,7 @@ public class CreateGameScene {
                 Objects.requireNonNull(getClass().getResource("/assets/ui/createGame.css")).toExternalForm()
         );
 
-        return  anchoredLayout;
+        return anchoredLayout;
     }
 
     // Sets the background image
@@ -139,7 +146,7 @@ public class CreateGameScene {
 
         // Create and format createGame button
         Button toCreateGameButton = new Button(I18nLoader.getText("create"));
-        toCreateGameButton.setOnAction(_ -> createGame(sceneManager));
+        toCreateGameButton.setOnAction(_ -> createGame());
         toCreateGameButton.getStyleClass().add("green-button");
 
         // Create and format cancel button
@@ -156,18 +163,20 @@ public class CreateGameScene {
         return box;
     }
 
-    private void createGame(SceneManager sceneManager) {
+    private void createGame() {
         ApiService.createGame();
         gameKeyInput.setText(GameStatus.getGameKey());
-
-        // TODO: Await opponent join
         showLoadingOverlay();
+    }
+
+    public void afterPlayerJoined(String opponentName) {
         // TODO: hideLoadingOverlay()
-
         // TODO: get Websocket connection and display inGameScene (optional: take key? / user?)
+    }
 
+    public void afterReady() {
         GameStatus.startGame(true);
-        PlayGameScene playGame = new PlayGameScene(sceneManager);
+        PlayGameScene playGame = new PlayGameScene(sceneManager, webSocketService);
         FXGL.getGameScene().clearUINodes();
         FXGL.getGameScene().addUINode(playGame.getRoot());
     }

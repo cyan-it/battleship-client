@@ -2,6 +2,7 @@ package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.ApiService;
+import com.battleshipclient.WebSocketClientService;
 import com.battleshipclient.status.GameStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
@@ -28,11 +29,13 @@ import java.util.Objects;
 
 public class JoinGameScene {
 
+    private final WebSocketClientService webSocketService;
     private TextField gameKeyInput;
 
     private final Pane root;
 
-    public JoinGameScene(SceneManager sceneManager) {
+    public JoinGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
+        this.webSocketService = webSocketService;
         VBox header = setHeaderBoxParameters(new VBox(20));
         VBox input = setKeyParameter(new VBox(40));
         HBox navigation = setNavigationButtons(new HBox(40), sceneManager);
@@ -160,7 +163,7 @@ public class JoinGameScene {
 
         if (!Objects.equals(GameStatus.getOpponentUserName(), "")) {
             GameStatus.startGame(false);
-            PlayGameScene playGame = new PlayGameScene(sceneManager);
+            PlayGameScene playGame = new PlayGameScene(sceneManager, webSocketService);
             FXGL.getGameScene().clearUINodes();
             FXGL.getGameScene().addUINode(playGame.getRoot());
         } else {

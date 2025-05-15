@@ -2,6 +2,7 @@ package com.battleshipclient.scenes;
 
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.ApiService;
+import com.battleshipclient.WebSocketClientService;
 import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;
@@ -29,12 +30,14 @@ import java.util.Objects;
 
 public class LoginScene {
 
+    private final WebSocketClientService webSocketService;
     private TextField usernameInput;
     private PasswordField passwordInput;
 
     private final Pane root;
 
-    public LoginScene(SceneManager sceneManager) {
+    public LoginScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
+        this.webSocketService = webSocketService;
         VBox header = setHeaderBoxParameters(new VBox(20));
         VBox input = setLoginInputParameters(new VBox(40));
         HBox navigation = setNavigationButtons(new HBox(40), sceneManager);
@@ -187,6 +190,7 @@ public class LoginScene {
                 UserOverlay.showOverlay();
                 clearInputFields();
 
+                webSocketService.connect();
             } else {
                 usernameInput.getStyleClass().add("inputField-error");
                 passwordInput.getStyleClass().add("inputField-error");

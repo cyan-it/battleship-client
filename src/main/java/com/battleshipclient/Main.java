@@ -29,9 +29,11 @@ public class Main extends GameApplication {
     protected void initGame() {
         // Set custom mouse cursor
         Image mouseCursorImage = new Image(Objects.requireNonNull(getClass().getResource("/assets/textures/Mouse_Cursor.png")).toExternalForm());
+        WebSocketClientService webSocketClientService = new WebSocketClientService();
+
         getGameScene().setCursor(new ImageCursor(mouseCursorImage));
 
-        SceneManager sceneManager = new SceneManager();
+        SceneManager sceneManager = new SceneManager(webSocketClientService);
         sceneManager.showHomeScene(false);
 
         // Event handler for forcefully closing the app

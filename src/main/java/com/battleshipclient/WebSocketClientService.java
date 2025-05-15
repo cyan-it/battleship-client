@@ -1,11 +1,12 @@
 package com.battleshipclient;
 
+import com.battleshipclient.scenes.CreateGameScene;
+import com.battleshipclient.scenes.PlayGameScene;
 import com.battleshipclient.status.UserStatus;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.messaging.converter.DefaultContentTypeResolver;
 import org.springframework.messaging.converter.MappingJackson2MessageConverter;
 import org.springframework.messaging.simp.stomp.StompSession;
-import org.springframework.messaging.simp.stomp.StompSessionHandler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.socket.WebSocketHttpHeaders;
@@ -22,6 +23,9 @@ public class WebSocketClientService {
 
     private final WebSocketStompClient stompClient;
     private StompSession stompSession;
+
+    private CreateGameScene gameScene;
+    private PlayGameScene playGameScene;
 
     public WebSocketClientService() {
         WebSocketClient webSocketClient = new StandardWebSocketClient();
@@ -46,9 +50,10 @@ public class WebSocketClientService {
 
     public void connect() {
         WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
+        StompSessionHandler handler = new StompSessionHandler(this);
         headers.add("Authorization", "Bearer " + UserStatus.getAccessToken());
 
-        CompletableFuture<StompSession> futureSession = stompClient.connectAsync(WS_URL, headers, sessionHandler);
+        CompletableFuture<StompSession> futureSession = stompClient.connectAsync(WS_URL, headers, handler);
 
         futureSession.orTimeout(10, TimeUnit.SECONDS)
                 .thenAccept(session -> {
@@ -70,6 +75,20 @@ public class WebSocketClientService {
     }
 
 
+    public PlayGameScene getPlayGameScene() {
+        return playGameScene;
+    }
 
+    public void setPlayGameScene(PlayGameScene playGameScene) {
+        this.playGameScene = playGameScene;
+    }
+
+    public CreateGameScene getGameScene() {
+        return gameScene;
+    }
+
+    public void setGameScene(CreateGameScene gameScene) {
+        this.gameScene = gameScene;
+    }
 }
 
