@@ -163,6 +163,7 @@ public class JoinGameScene {
 
         if (!Objects.equals(GameStatus.getOpponentUserName(), "")) {
             GameStatus.startGame(false);
+            clearInputFields();
             PlayGameScene playGame = new PlayGameScene(sceneManager, webSocketService);
             FXGL.getGameScene().clearUINodes();
             FXGL.getGameScene().addUINode(playGame.getRoot());

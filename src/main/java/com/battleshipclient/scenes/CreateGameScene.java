@@ -34,6 +34,7 @@ public class CreateGameScene {
     private final Pane root;
     private TextField gameKeyInput;
     private VBox loadingOverlay;
+    Button toCreateGameButton;
 
     public CreateGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
         this.sceneManager = sceneManager;
@@ -145,16 +146,18 @@ public class CreateGameScene {
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
         // Create and format createGame button
-        Button toCreateGameButton = new Button(I18nLoader.getText("create"));
+        toCreateGameButton = new Button(I18nLoader.getText("create"));
         toCreateGameButton.setOnAction(event -> createGame());
         toCreateGameButton.getStyleClass().add("green-button");
 
         // Create and format cancel button
         Button toCancelButton = new Button(I18nLoader.getText("return"));
         toCancelButton.setOnAction(event -> {
+            toCreateGameButton.setDisable(false);
             sceneManager.showHomeScene(true);
             clearInputFields();
             UserOverlay.showOverlay();
+            // TODO: ApiService -> Cancel Create
         });
         toCancelButton.getStyleClass().add("default-button");
 
@@ -167,10 +170,13 @@ public class CreateGameScene {
         ApiService.createGame();
         gameKeyInput.setText(GameStatus.getGameKey());
         showLoadingOverlay();
+        toCreateGameButton.setDisable(true);
     }
 
     public void afterPlayerJoined(String opponentName) {
         FXGL.getGameScene().removeUINode(loadingOverlay);
+        clearInputFields();
+        toCreateGameButton.setDisable(false);
         GameStatus.setOpponentUserName(opponentName);
         GameStatus.startGame(true);
         PlayGameScene playGame = new PlayGameScene(sceneManager, webSocketService);

@@ -61,16 +61,18 @@ public class PlayGameScene {
     private boolean currentSelectedShipIsPlaced;
     private int currentPlacedShipRow;
     private int currentPlacedShipCol;
+    private final HBox shipSelectionBox;
 
     public PlayGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
         this.sceneManager = sceneManager;
         UserStatus.setInGameStatus(true);
         VBox header = setHeaderBoxParameters(new VBox(20));
         HBox fields = setFieldsBoxParameters(new HBox(200));
-        HBox ships = setShipPlaceholder(new HBox(30));
+        shipSelectionBox = new HBox(30);
+        setShipPlaceholder();
         HBox actionButtons = setActionButtons(new HBox(40), sceneManager);
 
-        this.root = setScene(header, fields, actionButtons, ships);
+        this.root = setScene(header, fields, actionButtons);
 
         placeShips(2);
 
@@ -81,11 +83,11 @@ public class PlayGameScene {
     }
 
     @NotNull
-    private AnchorPane setScene(VBox header, HBox fields, HBox actionButtons, HBox ships) {
+    private AnchorPane setScene(VBox header, HBox fields, HBox actionButtons) {
         AnchorPane anchoredLayout = new AnchorPane();
 
         anchoredLayout.getChildren().add(setBackgroundImage());
-        anchoredLayout.getChildren().addAll(header, fields, actionButtons, ships);
+        anchoredLayout.getChildren().addAll(header, fields, actionButtons, shipSelectionBox);
 
         AnchorPane.setTopAnchor(header, 20.0);
         AnchorPane.setLeftAnchor(header, 0.0);
@@ -98,8 +100,8 @@ public class PlayGameScene {
         AnchorPane.setBottomAnchor(actionButtons, 20.0);
         AnchorPane.setRightAnchor(actionButtons, 20.0);
 
-        AnchorPane.setLeftAnchor(ships, 300.0);
-        AnchorPane.setBottomAnchor(ships, 40.0);
+        AnchorPane.setLeftAnchor(shipSelectionBox, 300.0);
+        AnchorPane.setBottomAnchor(shipSelectionBox, 40.0);
 
         anchoredLayout.prefWidthProperty().bind(FXGL.getGameScene().getViewport().widthProperty());
         anchoredLayout.prefHeightProperty().bind(FXGL.getGameScene().getViewport().heightProperty());
@@ -349,7 +351,9 @@ public class PlayGameScene {
                     notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
                     notificationText.setFill(Color.YELLOW);
 
-                    GameStatus.setIsMyTurn(false);
+                    PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(2));
+                    notificationTextPause.setOnFinished(actionEvent -> GameStatus.setIsMyTurn(false));
+                    notificationTextPause.play();
                 } else {
                     GameStatus.setIsMyTurn(false);
                 }
@@ -375,6 +379,11 @@ public class PlayGameScene {
     public void displayMyTurn() {
         notificationText.setText(I18nLoader.getText("inGame.notification.myTurn"));
         notificationText.setFill(Color.WHITE);
+
+        if (GameStatus.getIsMyTurnValue()) {
+            notificationText.setFill(Color.RED);
+            notificationText.setText(I18nLoader.getText("inGame.notification.opponentTurn"));
+        }
     }
 
     public void handleLose() {
@@ -408,16 +417,14 @@ public class PlayGameScene {
     }
 
     private void setOpponentTurnNotification(boolean isMyTurn) {
-        if (!isMyTurn) {
+        if (!isMyTurn && GameStatus.allShipsSet() && GameStatus.allShipsSetOpponent()) {
             notificationText.setFill(Color.RED);
             notificationText.setText(I18nLoader.getText("inGame.notification.opponentTurn"));
         }
     }
 
-    @NotNull
-    @Contract("_ -> param1")
-    private HBox setShipPlaceholder(@NotNull HBox box) {
-        box.setAlignment(Pos.CENTER);
+    private void setShipPlaceholder() {
+        shipSelectionBox.setAlignment(Pos.CENTER);
 
         imageViewOfShipOfCurrentType = new ImageView();
 
@@ -435,15 +442,16 @@ public class PlayGameScene {
             toSetVerticalButton.setText(newText);
         });
 
-        box.getChildren().addAll(imageViewOfShipOfCurrentType, counterTextOfShipsOfCurrentType, toSetVerticalButton);
-
-        return box;
+        shipSelectionBox.getChildren().addAll(imageViewOfShipOfCurrentType, counterTextOfShipsOfCurrentType, toSetVerticalButton);
     }
 
     private void placeShips(int size) {
         if (size > 5) {
             return;
         }
+
+        notificationText.setFill(Color.YELLOW);
+        notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement"));
 
         int counter;
         switch (size) {
@@ -496,10 +504,15 @@ public class PlayGameScene {
                     placeShips(size);
 
                     if (GameStatus.allShipsSet()) {
+                        shipSelectionBox.setVisible(false);
                         ApiService.setupBoard(GameStatus.getShips());
 
                         notificationText.setFill(Color.LIGHTGREEN);
                         notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.allShipsPlaced"));
+
+                        if (GameStatus.allShipsSetOpponent()) {
+                            setOpponentTurnNotification(GameStatus.getIsMyTurnValue());
+                        }
                     }
                 }
             }));
@@ -514,7 +527,7 @@ public class PlayGameScene {
         crossImageInBoard.setFitWidth(40);
         crossImageInBoard.setFitHeight(40);
 
-        myBoard.add(crossImageInBoard, posY, posX, 1, 1);
+        myBoard.add(crossImageInBoard, posY + 1, posX + 1);
     }
 
     public Pane getRoot() {
