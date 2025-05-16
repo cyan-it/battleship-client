@@ -372,6 +372,11 @@ public class PlayGameScene {
         return box;
     }
 
+    public void displayMyTurn() {
+        notificationText.setText(I18nLoader.getText("inGame.notification.myTurn"));
+        notificationText.setFill(Color.WHITE);
+    }
+
     public void handleLose() {
         notificationText.setText(I18nLoader.getText("inGame.notification.lose"));
         notificationText.setFill(Color.RED);

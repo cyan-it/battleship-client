@@ -47,6 +47,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         break;
                     case GAME_READY:
                         GameStatus.setAllShipsSetOpponent();
+                        webSocketClientService.getPlayGameScene().displayMyTurn();
                         break;
                     case GAME_FINISHED:
                         webSocketClientService.getPlayGameScene().handleLose();
@@ -61,6 +62,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         break;
                     case YOUR_TURN:
                         GameStatus.setIsMyTurn(true);
+                        webSocketClientService.getPlayGameScene().displayMyTurn();
                         break;
                 }
             }
