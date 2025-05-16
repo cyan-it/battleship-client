@@ -101,12 +101,12 @@ public class HomeScene {
 
         // Create and format signUp Button
         Button toSignUpSceneButton = new Button(I18nLoader.getText("scene.title.signUp"));
-        toSignUpSceneButton.setOnAction(_ -> sceneManager.showSignUpScene());
+        toSignUpSceneButton.setOnAction(event -> sceneManager.showSignUpScene());
         toSignUpSceneButton.getStyleClass().add("account-button");
 
         // Create and format logIn Button
         Button toLoginSceneButton = new Button(I18nLoader.getText("scene.title.logIn"));
-        toLoginSceneButton.setOnAction(_ -> sceneManager.showLoginScene());
+        toLoginSceneButton.setOnAction(event -> sceneManager.showLoginScene());
         toLoginSceneButton.getStyleClass().add("account-button");
 
         box.getChildren().addAll(toLoginSceneButton, toSignUpSceneButton);
@@ -122,7 +122,7 @@ public class HomeScene {
 
         // Create and format createGame Button
         toCreateGameSceneButton.setText(I18nLoader.getText("scene.title.createGame"));
-        toCreateGameSceneButton.setOnAction(_ -> {
+        toCreateGameSceneButton.setOnAction(event -> {
             sceneManager.showCreateGameScene();
             UserOverlay.showOverlay();
         });
@@ -130,7 +130,7 @@ public class HomeScene {
 
         // Create and format joinGame Button
         toJoinGameSceneButton.setText(I18nLoader.getText("scene.title.joinGame"));
-        toJoinGameSceneButton.setOnAction(_ -> {
+        toJoinGameSceneButton.setOnAction(event -> {
             sceneManager.showJoinGameScene();
             UserOverlay.showOverlay();
         });
@@ -172,7 +172,7 @@ public class HomeScene {
 
         // Create and format log-out Button
         Button toLogOutButton = new Button(I18nLoader.getText("scene.title.logOut"));
-        toLogOutButton.setOnAction(_ -> {
+        toLogOutButton.setOnAction(event -> {
             Text confirmationText = new Text(I18nLoader.getText("logout"));
 
             SimpleConfirmationPopup confirmationPopup = new SimpleConfirmationPopup();

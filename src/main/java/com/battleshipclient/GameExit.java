@@ -47,12 +47,12 @@ public class GameExit {
         toCancelButton.getStyleClass().add("gameExit-cancel-button");
 
         // Button actions
-        toConfirmButton.setOnAction(_ -> {
+        toConfirmButton.setOnAction(event -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(true);
         });
 
-        toCancelButton.setOnAction(_ -> {
+        toCancelButton.setOnAction(event -> {
             FXGL.getGameScene().removeUINode(popupBox);
             callback.accept(false);
         });

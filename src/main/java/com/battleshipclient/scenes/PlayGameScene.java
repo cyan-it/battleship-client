@@ -75,7 +75,7 @@ public class PlayGameScene {
         placeShips(2);
 
         setOpponentTurnNotification(GameStatus.getIsMyTurnValue());
-        GameStatus.getIsMyTurn().addListener((_, _, newVal) -> setOpponentTurnNotification(newVal));
+        GameStatus.getIsMyTurn().addListener((ignore, ignoredValue, newVal) -> setOpponentTurnNotification(newVal));
 
         webSocketService.setPlayGameScene(this);
     }
@@ -205,7 +205,7 @@ public class PlayGameScene {
                 } else {
                     final int selectedCol = col;
                     final int selectedRow = row;
-                    cell.setOnMouseClicked(_ -> {
+                    cell.setOnMouseClicked(event -> {
                         if (!GameStatus.allShipsSet()) {
                             boolean outOfBounds = currentSelectedShipIsVertical
                                     ? selectedRow + currentSelectedShipSize - 1 > 10
@@ -270,7 +270,7 @@ public class PlayGameScene {
                 } else {
                     int finalCol = col;
                     int finalRow = row;
-                    cell.setOnMouseClicked(_ -> {
+                    cell.setOnMouseClicked(event -> {
                         hitPosX = finalCol - 1;
                         hitPosY = finalRow - 1;
 
@@ -303,7 +303,7 @@ public class PlayGameScene {
         box.setAlignment(Pos.BOTTOM_RIGHT);
 
         Button toSurrenderButton = new Button(I18nLoader.getText("inGame.surrender"));
-        toSurrenderButton.setOnAction(_ -> {
+        toSurrenderButton.setOnAction(event -> {
             Text confirmationText = new Text(I18nLoader.getText("inGame.surrender.confirm"));
 
             SimpleConfirmationPopup confirmationPopup = new SimpleConfirmationPopup();
@@ -321,7 +321,7 @@ public class PlayGameScene {
         toSurrenderButton.getStyleClass().add("red-button");
 
         toMakeHit = new Button(I18nLoader.getText("inGame.makeHit"));
-        toMakeHit.setOnAction(_ -> {
+        toMakeHit.setOnAction(event -> {
             if (selectedCell != null & currentDot != null) {
                 ApiService.hit(hitPosX, hitPosY);
 
@@ -336,7 +336,7 @@ public class PlayGameScene {
                     notificationText.setFill(Color.LIGHTGREEN);
 
                     PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
-                    notificationTextPause.setOnFinished(_ -> {
+                    notificationTextPause.setOnFinished(actionEvent -> {
                         UserStatus.setInGameStatus(false);
                         sceneManager.showHomeScene(true);
                         UserOverlay.showOverlay();
@@ -382,7 +382,7 @@ public class PlayGameScene {
         notificationText.setFill(Color.RED);
 
         PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
-        notificationTextPause.setOnFinished(_ -> {
+        notificationTextPause.setOnFinished(event -> {
             UserStatus.setInGameStatus(false);
             sceneManager.showHomeScene(true);
             UserOverlay.showOverlay();
@@ -397,7 +397,7 @@ public class PlayGameScene {
         notificationText.setFill(Color.RED);
 
         PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(3));
-        notificationTextPause.setOnFinished(_ -> {
+        notificationTextPause.setOnFinished(event -> {
             UserStatus.setInGameStatus(false);
             sceneManager.showHomeScene(true);
             UserOverlay.showOverlay();
@@ -428,7 +428,7 @@ public class PlayGameScene {
 
         Button toSetVerticalButton = new Button("H");
         toSetVerticalButton.getStyleClass().add("vertical-button");
-        toSetVerticalButton.setOnAction(_ -> {
+        toSetVerticalButton.setOnAction(event -> {
             String oldText = toSetVerticalButton.getText();
             String newText = Objects.equals(oldText, "H") ? "V" : "H";
             currentSelectedShipIsVertical = Objects.equals(newText, "V");
@@ -473,7 +473,7 @@ public class PlayGameScene {
 
             // Poll every 100ms to check if the ship has been placed
             Timeline waitForPlacement = new Timeline();
-            waitForPlacement.getKeyFrames().add(new KeyFrame(Duration.millis(100), _ -> {
+            waitForPlacement.getKeyFrames().add(new KeyFrame(Duration.millis(100), event -> {
                 if (currentSelectedShipIsPlaced) {
                     waitForPlacement.stop();
                     notificationText.setText("");

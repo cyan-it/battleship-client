@@ -155,12 +155,12 @@ public class LoginScene {
 
         // Create and format login button
         Button toLoginButton = new Button(I18nLoader.getText("scene.title.logIn"));
-        toLoginButton.setOnAction(_ -> verifyLogin(sceneManager));
+        toLoginButton.setOnAction(event -> verifyLogin(sceneManager));
         toLoginButton.getStyleClass().add("green-button");
 
         // Create and format cancel button
         Button toCancelButton = new Button(I18nLoader.getText("return"));
-        toCancelButton.setOnAction(_ -> {
+        toCancelButton.setOnAction(event -> {
             sceneManager.showHomeScene(false);
             clearInputFields();
         });

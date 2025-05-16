@@ -141,12 +141,12 @@ public class JoinGameScene {
 
         // Create and format joinGame button
         Button toJoinGameButton = new Button(I18nLoader.getText("joinGame"));
-        toJoinGameButton.setOnAction(_ -> verifyKeyAndStartGame(sceneManager));
+        toJoinGameButton.setOnAction(event -> verifyKeyAndStartGame(sceneManager));
         toJoinGameButton.getStyleClass().add("green-button");
 
         // Create and format cancel button
         Button toCancelButton = new Button(I18nLoader.getText("return"));
-        toCancelButton.setOnAction(_ -> {
+        toCancelButton.setOnAction(event -> {
             clearInputFields();
             sceneManager.showHomeScene(true);
             UserOverlay.showOverlay();

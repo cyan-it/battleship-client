@@ -31,7 +31,7 @@ public class SimpleTextPopup {
         toCloseButton.getStyleClass().add("simpleTextPopup-close-button");
 
         // Close popup after button-press
-        toCloseButton.setOnAction(_ -> FXGL.getGameScene().removeUINode(popupBox));
+        toCloseButton.setOnAction(event -> FXGL.getGameScene().removeUINode(popupBox));
 
         closeButton.getChildren().add(toCloseButton);
         popupBox.getChildren().addAll(text, closeButton);

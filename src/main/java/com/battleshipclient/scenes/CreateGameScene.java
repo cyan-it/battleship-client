@@ -146,12 +146,12 @@ public class CreateGameScene {
 
         // Create and format createGame button
         Button toCreateGameButton = new Button(I18nLoader.getText("create"));
-        toCreateGameButton.setOnAction(_ -> createGame());
+        toCreateGameButton.setOnAction(event -> createGame());
         toCreateGameButton.getStyleClass().add("green-button");
 
         // Create and format cancel button
         Button toCancelButton = new Button(I18nLoader.getText("return"));
-        toCancelButton.setOnAction(_ -> {
+        toCancelButton.setOnAction(event -> {
             sceneManager.showHomeScene(true);
             clearInputFields();
             UserOverlay.showOverlay();
