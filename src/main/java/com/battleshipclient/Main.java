@@ -41,6 +41,7 @@ public class Main extends GameApplication {
             GameExit exit = new GameExit();
             exit.exit();
             event.consume();
+            System.exit(0);
         });
     }
 
