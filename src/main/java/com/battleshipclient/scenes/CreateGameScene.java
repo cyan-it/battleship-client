@@ -32,9 +32,9 @@ public class CreateGameScene {
     @NotNull
     private final WebSocketClientService webSocketService;
     private final Pane root;
+    Button toCreateGameButton;
     private TextField gameKeyInput;
     private VBox loadingOverlay;
-    Button toCreateGameButton;
 
     public CreateGameScene(SceneManager sceneManager, WebSocketClientService webSocketService) {
         this.sceneManager = sceneManager;
@@ -157,7 +157,7 @@ public class CreateGameScene {
             sceneManager.showHomeScene(true);
             clearInputFields();
             UserOverlay.showOverlay();
-            // TODO: ApiService -> Cancel Create
+            ApiService.abortGame();
         });
         toCancelButton.getStyleClass().add("default-button");
 

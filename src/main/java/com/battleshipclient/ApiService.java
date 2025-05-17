@@ -164,4 +164,19 @@ public class ApiService {
             throw new RuntimeException(e);
         }
     }
+
+    public static void abortGame() {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(baseUrl + "/game/abort"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", "Bearer " + UserStatus.getAccessToken())
+                .POST(HttpRequest.BodyPublishers.noBody())
+                .build();
+
+        try {
+            client.send(request, HttpResponse.BodyHandlers.ofString());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
