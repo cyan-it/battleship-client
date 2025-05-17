@@ -3,6 +3,7 @@ package com.battleshipclient;
 import com.battleshipclient.records.HitNotification;
 import com.battleshipclient.records.Notification;
 import com.battleshipclient.status.GameStatus;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import javafx.application.Platform;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
@@ -15,6 +16,7 @@ import java.lang.reflect.Type;
 public class StompSessionHandler extends StompSessionHandlerAdapter {
 
     private final WebSocketClientService webSocketClientService;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public StompSessionHandler(WebSocketClientService webSocketClientService) {
         this.webSocketClientService = webSocketClientService;
@@ -47,7 +49,7 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         break;
                     case GAME_READY:
                         GameStatus.setAllShipsSetOpponent();
-                        webSocketClientService.getPlayGameScene().displayMyTurn();
+                        webSocketClientService.getPlayGameScene().setOpponentTurnNotification(GameStatus.getIsMyTurnValue());
                         break;
                     case GAME_FINISHED:
                         webSocketClientService.getPlayGameScene().handleLose();
@@ -56,13 +58,12 @@ public class StompSessionHandler extends StompSessionHandlerAdapter {
                         webSocketClientService.getPlayGameScene().handleSurrender();
                         break;
                     case HIT, SHIP_DESTROYED:
-                        HitNotification hitNotification = (HitNotification) notification.data();
+                        HitNotification hitNotification = objectMapper.convertValue(notification.data(), HitNotification.class);
 
-                        webSocketClientService.getPlayGameScene().setCrossOnField(hitNotification.x(), hitNotification.y());
+                        Platform.runLater(() -> webSocketClientService.getPlayGameScene().setCrossOnField(hitNotification.x(), hitNotification.y()));
                         break;
                     case YOUR_TURN:
                         GameStatus.setIsMyTurn(true);
-                        webSocketClientService.getPlayGameScene().displayMyTurn();
                         break;
                 }
             }

@@ -3,7 +3,6 @@ package com.battleshipclient.scenes;
 import com.almasb.fxgl.dsl.FXGL;
 import com.battleshipclient.ApiService;
 import com.battleshipclient.WebSocketClientService;
-import com.battleshipclient.status.GameStatus;
 import com.battleshipclient.status.UserStatus;
 import com.battleshipclient.utils.I18nLoader;
 import com.battleshipclient.SceneManager;

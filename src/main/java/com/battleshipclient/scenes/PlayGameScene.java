@@ -376,16 +376,6 @@ public class PlayGameScene {
         return box;
     }
 
-    public void displayMyTurn() {
-        notificationText.setText(I18nLoader.getText("inGame.notification.myTurn"));
-        notificationText.setFill(Color.WHITE);
-
-        if (GameStatus.getIsMyTurnValue()) {
-            notificationText.setFill(Color.RED);
-            notificationText.setText(I18nLoader.getText("inGame.notification.opponentTurn"));
-        }
-    }
-
     public void handleLose() {
         notificationText.setText(I18nLoader.getText("inGame.notification.lose"));
         notificationText.setFill(Color.RED);
@@ -416,10 +406,13 @@ public class PlayGameScene {
         notificationTextPause.play();
     }
 
-    private void setOpponentTurnNotification(boolean isMyTurn) {
+    public void setOpponentTurnNotification(boolean isMyTurn) {
         if (!isMyTurn && GameStatus.allShipsSet() && GameStatus.allShipsSetOpponent()) {
             notificationText.setFill(Color.RED);
             notificationText.setText(I18nLoader.getText("inGame.notification.opponentTurn"));
+        } else if (isMyTurn && GameStatus.allShipsSet() && GameStatus.allShipsSetOpponent()) {
+            notificationText.setFill(Color.LIGHTGREEN);
+            notificationText.setText(I18nLoader.getText("inGame.notification.myTurn"));
         }
     }
 
@@ -507,11 +500,9 @@ public class PlayGameScene {
                         shipSelectionBox.setVisible(false);
                         ApiService.setupBoard(GameStatus.getShips());
 
-                        notificationText.setFill(Color.LIGHTGREEN);
-                        notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.allShipsPlaced"));
-
-                        if (GameStatus.allShipsSetOpponent()) {
-                            setOpponentTurnNotification(GameStatus.getIsMyTurnValue());
+                        if (!GameStatus.allShipsSetOpponent()) {
+                            notificationText.setFill(Color.LIGHTGREEN);
+                            notificationText.setText(I18nLoader.getText("inGame.notification.shipPlacement.allShipsPlaced"));
                         }
                     }
                 }
@@ -527,7 +518,7 @@ public class PlayGameScene {
         crossImageInBoard.setFitWidth(40);
         crossImageInBoard.setFitHeight(40);
 
-        myBoard.add(crossImageInBoard, posY + 1, posX + 1);
+        myBoard.add(crossImageInBoard, posX + 1, posY + 1);
     }
 
     public Pane getRoot() {
