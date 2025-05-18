@@ -351,7 +351,7 @@ public class PlayGameScene {
                     notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
                     notificationText.setFill(Color.YELLOW);
 
-                    PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(2));
+                    PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(1));
                     notificationTextPause.setOnFinished(actionEvent -> GameStatus.setIsMyTurn(false));
                     notificationTextPause.play();
                 } else {
