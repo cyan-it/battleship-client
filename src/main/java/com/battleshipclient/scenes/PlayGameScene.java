@@ -325,6 +325,7 @@ public class PlayGameScene {
         toMakeHit = new Button(I18nLoader.getText("inGame.makeHit"));
         toMakeHit.setOnAction(event -> {
             if (selectedCell != null & currentDot != null) {
+                toMakeHit.setDisable(true);
                 ApiService.hit(hitPosX, hitPosY);
 
                 if (GameStatus.getCurrentHitType() == HitType.HIT) {
@@ -363,12 +364,9 @@ public class PlayGameScene {
 
                 selectedCell = null;
                 currentDot = null;
-
-                toMakeHit.setDisable(true);
             }
         });
         toMakeHit.getStyleClass().add("green-button");
-        toMakeHit.setDisable(true);
         toMakeHit.visibleProperty().bind(GameStatus.getIsMyTurn());
 
         box.getChildren().addAll(toMakeHit, toSurrenderButton);
