@@ -349,12 +349,7 @@ public class PlayGameScene {
 
                     notificationTextPause.play();
                 } else if (GameStatus.getCurrentHitType() == HitType.MISS) {
-                    notificationText.setText(I18nLoader.getText("inGame.notification.noHit"));
-                    notificationText.setFill(Color.YELLOW);
-
-                    PauseTransition notificationTextPause = new PauseTransition(Duration.seconds(1));
-                    notificationTextPause.setOnFinished(actionEvent -> GameStatus.setIsMyTurn(false));
-                    notificationTextPause.play();
+                    GameStatus.setIsMyTurn(false);
                 } else {
                     GameStatus.setIsMyTurn(false);
                 }
