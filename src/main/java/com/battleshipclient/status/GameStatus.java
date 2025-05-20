@@ -64,6 +64,8 @@ public class GameStatus {
         numberOfSize4ShipsToBeSet = 2;
         numberOfSize5ShipsToBeSet = 1;
         ships.clear();
+        allShipsSet = false;
+        allShipsSetOpponent = false;
     }
 
     public static boolean allShipsSet() {
